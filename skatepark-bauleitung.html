@@ -2,10 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Skatepark-Bauleitung</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Lexend:wght@500;600;700&display=swap">
 <style>
 /* Gleiche Bildsprache wie Parabel-Fahrstuhl (Stunde 3) und Parabel-Kran (Stunde 4).
    Drei Steuerungen: Form-Regler a (grün), Kran d (orange), Fahrstuhl e (blau). */
@@ -150,13 +148,12 @@ textarea{width:100%;border:2px solid var(--line);border-radius:10px;padding:8px;
 </style>
 </head>
 <body>
-<header>
-  <div class="hwrap">
+<div class="hwrap">
     <div class="brand"><b>Skatepark-Bauleitung</b><span>Baupläne lesen: y = a(x − d)² + e</span></div>
     <nav class="route" id="route" aria-label="Stationen"></nav>
     <button class="reset" id="reset" type="button">Neu starten</button>
   </div>
-</header>
+
 
 <main>
   <section class="card plot" aria-label="Koordinatensystem">

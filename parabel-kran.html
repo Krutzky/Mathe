@@ -1,6 +1,9 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Parabel-Kran</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Lexend:wght@500;600;700&display=swap">
 <style>
 /* Layout: Kopfleiste mit Stationen-Weg · links Koordinatensystem (fest) · rechts Kran-Steuerpult + Stationsaufgabe; auf schmalen Geräten untereinander.
    Gleiche Bildsprache wie der Parabel-Fahrstuhl (Stunde 3), Akzent jetzt Baustellen-Gelb/Orange für den Kran. */
@@ -132,14 +135,14 @@ tbody th{background:var(--blue-soft);font-weight:700;white-space:nowrap}
 @media (max-width:520px){.tf{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
-
-<header>
-  <div class="hwrap">
+</head>
+<body>
+<div class="hwrap">
     <div class="brand"><b>Parabel-Kran</b><span>Wie verschiebt d die Parabel y = (x − d)²?</span></div>
     <nav class="route" id="route" aria-label="Stationen"></nav>
     <button class="reset" id="reset" type="button">Neu starten</button>
   </div>
-</header>
+
 
 <main>
   <section class="card plot" aria-label="Koordinatensystem">
@@ -681,3 +684,5 @@ load();if(!unlocked(st.station))st.station=0;
 render();resize();setD(0);
 })();
 </script>
+</body>
+</html>

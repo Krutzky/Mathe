@@ -1,7 +1,9 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Parabel-Fahrstuhl</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Lexend:wght@500;600;700&display=swap">
 <style>
 /* Layout: Kopfleiste mit Stationen-Weg · links Koordinatensystem (fest) · rechts Fahrstuhl-Bedienfeld + Stationsaufgabe; auf schmalen Geräten untereinander */
 :root{
@@ -118,14 +120,14 @@ tbody th{background:var(--blue-soft);font-weight:700;white-space:nowrap}
 .reset{background:transparent;border:1.5px solid #34428F;color:#B9C6EE;border-radius:999px;padding:5px 10px;font-size:13px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
-
-<header>
-  <div class="hwrap">
+</head>
+<body>
+<div class="hwrap">
     <div class="brand"><b>Parabel-Fahrstuhl</b><span>Wie verändert e die Parabel y = x² + e?</span></div>
     <nav class="route" id="route" aria-label="Stationen"></nav>
     <button class="reset" id="reset" type="button">Neu starten</button>
   </div>
-</header>
+
 
 <main>
   <section class="card plot" aria-label="Koordinatensystem">
@@ -545,4 +547,5 @@ load();if(!unlocked(st.station))st.station=0;
 render();resize();setE(0);
 })();
 </script>
-</body></html>
+</body>
+</html>
