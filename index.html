@@ -100,12 +100,16 @@
      - info:  kurze Zeile unter dem Namen (optional)
      - datei: Dateiname der App im selben Repository.
               Leer lassen ("") = wird als „folgt bald“ angezeigt.
+     - frei:  false = App ist hochgeladen, aber noch gesperrt („folgt bald“).
+              Weglassen oder true = App ist anklickbar.
+     - ab:    (optional) Datum, ab dem die App automatisch frei ist,
+              z. B. ab: "2026-11-03". Davor steht sie auf „folgt bald“.
      ========================================================= */
   const apps = [
     { thema: "Quadratische Funktionen – Parabeln", nr: 1, titel: "Parabel-Fahrstuhl", info: "Wie verändert e die Parabel y = x² + e?", datei: "parabel/parabel-fahrstuhl.html" },
-    { thema: "Quadratische Funktionen – Parabeln", nr: 2, titel: "Parabel-Kran", info: "Wie verschiebt d die Parabel y = (x − d)²?", datei: "parabel/parabel-kran.html" },
-    { thema: "Quadratische Funktionen – Parabeln", nr: 3, titel: "Skatepark-Baustelle", info: "Kran-Check (d) und der neue Form-Regler a", datei: "parabel/skatepark-baustelle.html" },
-    { thema: "Quadratische Funktionen – Parabeln", nr: 4, titel: "Skatepark-Bauleitung", info: "Baupläne lesen: y = a(x − d)² + e", datei: "parabel/skatepark-bauleitung.html" },
+    { thema: "Quadratische Funktionen – Parabeln", nr: 2, titel: "Parabel-Kran", info: "Wie verschiebt d die Parabel y = (x − d)²?", datei: "parabel/parabel-kran.html", frei: false },
+    { thema: "Quadratische Funktionen – Parabeln", nr: 3, titel: "Skatepark-Baustelle", info: "Kran-Check (d) und der neue Form-Regler a", datei: "parabel/skatepark-baustelle.html", frei: false },
+    { thema: "Quadratische Funktionen – Parabeln", nr: 4, titel: "Skatepark-Bauleitung", info: "Baupläne lesen: y = a(x − d)² + e", datei: "parabel/skatepark-bauleitung.html", frei: false },
   ];
   if (!apps.length) document.getElementById("liste").innerHTML = '<p class="sub">Hier erscheinen bald die ersten Mathe-Apps.</p>';
 
@@ -119,15 +123,17 @@
       liste.appendChild(h);
       aktuellesThema = app.thema;
     }
-    const el = document.createElement(app.datei ? "a" : "div");
-    el.className = "app" + (app.datei ? "" : " gesperrt");
-    if (app.datei) el.href = app.datei;
+    const offen = !!app.datei && app.frei !== false &&
+      (!app.ab || new Date() >= new Date(app.ab + "T00:00:00"));
+    const el = document.createElement(offen ? "a" : "div");
+    el.className = "app" + (offen ? "" : " gesperrt");
+    if (offen) el.href = app.datei;
     el.innerHTML =
       '<div class="nr">' + app.nr + '</div>' +
       '<div><div class="titel"></div><div class="info"></div></div>' +
-      (app.datei ? '<div class="pfeil">›</div>' : '');
+      (offen ? '<div class="pfeil">›</div>' : '');
     el.querySelector(".titel").textContent = app.titel;
-    el.querySelector(".info").textContent = app.datei ? (app.info || "") : "folgt bald";
+    el.querySelector(".info").textContent = offen ? (app.info || "") : "folgt bald";
     liste.appendChild(el);
   });
 </script>
