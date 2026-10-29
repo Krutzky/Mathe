@@ -92,7 +92,7 @@
 <body>
 <main>
   <h1>Mathe-Apps</h1>
-  <p class="sub">Wähle dein Thema.</p>
+  <p class="sub">Wähle deinen Jahrgang.</p>
 
   <div id="liste"></div>
 
@@ -105,6 +105,8 @@
 <script>
   /* =========================================================
      HIER BEARBEITEN: Für jede neue App eine Zeile ergänzen.
+     - jahrgang: z. B. "Jahrgang 7" (muss in JAHRGAENGE stehen).
+              Weglassen = Thema steht direkt auf der Startseite.
      - thema: Überschrift (z. B. die Unterrichtseinheit)
      - nr:    Nummer auf der Kachel
      - titel: Name der App
@@ -116,11 +118,13 @@
      - ab:    (optional) Datum, ab dem die App automatisch frei ist,
               z. B. ab: "2026-11-03". Davor steht sie auf „folgt bald“.
      ========================================================= */
+  const JAHRGAENGE = ["Jahrgang 5", "Jahrgang 6", "Jahrgang 7", "Jahrgang 8", "Jahrgang 9", "Jahrgang 10"];
+
   const apps = [
-    { thema: "Quadratische Funktionen – Parabeln", nr: 1, titel: "Parabel-Fahrstuhl", info: "Wie verändert e die Parabel y = x² + e?", datei: "parabel/parabel-fahrstuhl.html" },
-    { thema: "Quadratische Funktionen – Parabeln", nr: 2, titel: "Parabel-Kran", info: "Wie verschiebt d die Parabel y = (x − d)²?", datei: "parabel/parabel-kran.html" },
-    { thema: "Quadratische Funktionen – Parabeln", nr: 3, titel: "Skatepark-Baustelle", info: "Kran-Check (d) und der neue Form-Regler a", datei: "parabel/skatepark-baustelle.html" },
-    { thema: "Quadratische Funktionen – Parabeln", nr: 4, titel: "Skatepark-Bauleitung", info: "Baupläne lesen: y = a(x − d)² + e", datei: "parabel/skatepark-bauleitung.html" },
+    { jahrgang: "Jahrgang 10", thema: "Quadratische Funktionen – Parabeln", nr: 1, titel: "Parabel-Fahrstuhl", info: "Wie verändert e die Parabel y = x² + e?", datei: "Jahrgang%2010/parabel/parabel-fahrstuhl.html" },
+    { jahrgang: "Jahrgang 10", thema: "Quadratische Funktionen – Parabeln", nr: 2, titel: "Parabel-Kran", info: "Wie verschiebt d die Parabel y = (x − d)²?", datei: "Jahrgang%2010/parabel/parabel-kran.html" },
+    { jahrgang: "Jahrgang 10", thema: "Quadratische Funktionen – Parabeln", nr: 3, titel: "Skatepark-Baustelle", info: "Kran-Check (d) und der neue Form-Regler a", datei: "Jahrgang%2010/parabel/skatepark-baustelle.html" },
+    { jahrgang: "Jahrgang 10", thema: "Quadratische Funktionen – Parabeln", nr: 4, titel: "Skatepark-Bauleitung", info: "Baupläne lesen: y = a(x − d)² + e", datei: "Jahrgang%2010/parabel/skatepark-bauleitung.html" },
   ];
 
   const liste = document.getElementById("liste");
@@ -131,10 +135,12 @@
     return !!app.datei && app.frei !== false &&
       (!app.ab || new Date() >= new Date(app.ab + "T00:00:00"));
   }
-
-  // Themen in der Reihenfolge, in der sie in der Liste vorkommen
-  const themen = [];
-  apps.forEach(app => { if (!themen.includes(app.thema)) themen.push(app.thema); });
+  function themenVon(liste) {
+    const t = [];
+    liste.forEach(a => { if (!t.includes(a.thema)) t.push(a.thema); });
+    return t;
+  }
+  const ohneJahrgang = apps.filter(a => !a.jahrgang);
 
   function kachel(nr, titel, info, href, offen) {
     const el = document.createElement(offen ? "a" : "div");
@@ -149,48 +155,75 @@
     el.querySelector(".info").textContent = info;
     return el;
   }
+  function ueberschrift(t) {
+    const h = document.createElement("h2"); h.textContent = t; liste.appendChild(h);
+  }
+  function zurueckLink(text, href) {
+    const a = document.createElement("a");
+    a.href = href; a.className = "zurueck"; a.textContent = "‹ " + text;
+    liste.appendChild(a);
+  }
+  function anzahl(n, eins, viele) { return n + " " + (n === 1 ? eins : viele); }
+  function hashFuer(o) {
+    return "#" + Object.keys(o).map(k => k + "=" + encodeURIComponent(o[k])).join("&");
+  }
 
+  // Ebene 1: Startseite
   function zeigeUebersicht() {
     liste.innerHTML = "";
     sub.textContent = subStart;
-    if (!themen.length) {
-      liste.innerHTML = '<p class="sub">Hier erscheinen bald die ersten Apps.</p>';
-      return;
-    }
-    const h = document.createElement("h2");
-    h.textContent = "Themen";
-    liste.appendChild(h);
-    themen.forEach((thema, i) => {
-      const alle = apps.filter(a => a.thema === thema);
-      const offen = alle.filter(istOffen).length;
-      const info = offen
-        ? offen + (offen === 1 ? " App" : " Apps")
-        : "folgt bald";
-      liste.appendChild(kachel(i + 1, thema, info, "#thema=" + encodeURIComponent(thema), offen > 0));
+    ueberschrift("Übersicht");
+    let nr = 1;
+    themenVon(ohneJahrgang).forEach(thema => {
+      const offen = ohneJahrgang.filter(a => a.thema === thema && istOffen(a)).length;
+      liste.appendChild(kachel(nr++, thema, offen ? anzahl(offen, "App", "Apps") : "folgt bald",
+        hashFuer({ t: thema }), offen > 0));
+    });
+    JAHRGAENGE.forEach(jg => {
+      const jgApps = apps.filter(a => a.jahrgang === jg);
+      const offen = jgApps.filter(istOffen).length;
+      const nt = themenVon(jgApps.filter(istOffen)).length;
+      liste.appendChild(kachel(nr++, jg, offen ? anzahl(nt, "Thema", "Themen") : "folgt bald",
+        hashFuer({ j: jg }), offen > 0));
     });
   }
 
-  function zeigeThema(thema) {
+  // Ebene 2: Themen eines Jahrgangs
+  function zeigeJahrgang(jg) {
+    liste.innerHTML = "";
+    sub.textContent = "Wähle dein Thema.";
+    zurueckLink("Übersicht", "#");
+    ueberschrift(jg);
+    const jgApps = apps.filter(a => a.jahrgang === jg);
+    themenVon(jgApps).forEach((thema, i) => {
+      const offen = jgApps.filter(a => a.thema === thema && istOffen(a)).length;
+      liste.appendChild(kachel(i + 1, thema, offen ? anzahl(offen, "App", "Apps") : "folgt bald",
+        hashFuer({ j: jg, t: thema }), offen > 0));
+    });
+  }
+
+  // Ebene 3: Apps eines Themas
+  function zeigeThema(jg, thema) {
     liste.innerHTML = "";
     sub.textContent = "Wähle eine App.";
-    const zurueck = document.createElement("a");
-    zurueck.href = "#";
-    zurueck.className = "zurueck";
-    zurueck.textContent = "‹ Alle Themen";
-    liste.appendChild(zurueck);
-    const h = document.createElement("h2");
-    h.textContent = thema;
-    liste.appendChild(h);
-    apps.filter(a => a.thema === thema).forEach(app => {
+    if (jg) zurueckLink(jg, hashFuer({ j: jg }));
+    else zurueckLink("Übersicht", "#");
+    ueberschrift(thema);
+    apps.filter(a => (a.jahrgang || null) === (jg || null) && a.thema === thema).forEach(app => {
       const offen = istOffen(app);
       liste.appendChild(kachel(app.nr, app.titel, offen ? (app.info || "") : "folgt bald", app.datei, offen));
     });
   }
 
   function anzeigen() {
-    const m = location.hash.match(/^#thema=(.*)$/);
-    const thema = m ? decodeURIComponent(m[1]) : null;
-    if (thema && themen.includes(thema)) zeigeThema(thema);
+    const p = {};
+    location.hash.replace(/^#/, "").split("&").forEach(x => {
+      const k = x.indexOf("=");
+      if (k > 0) p[x.slice(0, k)] = decodeURIComponent(x.slice(k + 1));
+    });
+    const jg = JAHRGAENGE.includes(p.j) ? p.j : null;
+    if (p.t && apps.some(a => (a.jahrgang || null) === jg && a.thema === p.t)) zeigeThema(jg, p.t);
+    else if (jg) zeigeJahrgang(jg);
     else zeigeUebersicht();
     window.scrollTo(0, 0);
   }
