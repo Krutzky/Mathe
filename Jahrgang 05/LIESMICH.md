@@ -1,3 +1,3 @@
 # Jahrgang 5
 
-Hier kommen die Mathe-Apps für Jahrgang 5 hinein (je Thema ein Unterordner).
+Mathe-Apps für Jahrgang 5 (je Thema ein Unterordner).
