@@ -127,6 +127,18 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
 .sl input[type=range]{width:100%;accent-color:var(--blue);height:30px}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .tools .btn{padding:9px 14px;font-size:15px}
+.btn.tipbtn{background:var(--accent);color:var(--accent-ink);opacity:.92}
+.btn.tipbtn:disabled,.btn.sec:disabled{opacity:.4}
+.tipcard{margin-top:12px;border-radius:16px;border:2px solid var(--accent);background:var(--surface);overflow:hidden;box-shadow:0 6px 18px rgba(15,30,70,.12);animation:flipIn .45s ease both;transform-origin:top center}
+.tipcard .tch{background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:700;padding:8px 14px;display:flex;justify-content:space-between;gap:10px;font-size:15px}
+.tipcard .tcb{padding:12px 14px;display:grid;gap:10px}
+.tipcard .step{background:var(--blue-soft);border-radius:10px;padding:10px 12px}
+.tipcard .lbl{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:var(--blue);margin-bottom:3px}
+.tipcard ul{margin:0;padding-left:20px}
+.tipcard li{margin:3px 0}
+.chips50{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.chips50 button{border:2px solid var(--blue);background:var(--surface);color:var(--blue);border-radius:12px;padding:8px 18px;font-weight:700;font-size:18px}
+@keyframes flipIn{from{opacity:0;transform:perspective(700px) rotateX(-70deg)}to{opacity:1;transform:none}}
 .jhint{margin-top:10px;border-radius:12px;padding:10px 14px;background:var(--blue-soft);color:var(--ink);font-size:16px}
 /* Rückmeldung */
 .fb{margin-top:16px;border-radius:14px;padding:16px;border:2px solid}
@@ -209,7 +221,7 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
     <div class="card">
       <div class="eyebrow">Willkommen zur ZP10-Wissensjagd!</div>
       <h1>Fit für die Zentrale Prüfung in Mathe</h1>
-      <p class="muted">Kopfrechnen, Prozente, Funktionen, Pythagoras, Wahrscheinlichkeit und vieles mehr: Hier warten <b id="nQ">200</b> feste Aufgaben und <b id="nG">70</b> Aufgabentypen, die sich jedes Mal mit neuen Zahlen zusammenwürfeln. Mal tippst du die richtige Antwort an, mal rechnest du selbst, mal schiebst du Graphen und Karten an die richtige Stelle. Fehler sind ausdrücklich erlaubt – nach jeder Aufgabe siehst du den Rechenweg.</p>
+      <p class="muted">Kopfrechnen, Prozente, Funktionen, Pythagoras, Wahrscheinlichkeit und vieles mehr: Hier warten <b id="nQ">200</b> feste Aufgaben und <b id="nG">70</b> Aufgabentypen, die sich jedes Mal mit neuen Zahlen zusammenwürfeln. Mal tippst du die richtige Antwort an, mal rechnest du selbst, mal schiebst du Graphen und Karten an die richtige Stelle. Fehler sind ausdrücklich erlaubt – nach jeder Aufgabe siehst du den Rechenweg. Wenn du feststeckst, helfen dir der ✂️ 50:50-Joker und die 💡 Tipp-Karten. Mit Hilfe gibt es halbe Punkte, und für jede 5er-Serie bekommst du eine neue Tipp-Karte geschenkt.</p>
       <div class="row" style="margin-top:14px">
         <label class="f">Dein Vorname<input id="inName" autocomplete="given-name" maxlength="30" placeholder="z. B. Emir"></label>
         <label class="f">Deine Klasse<input id="inKl" maxlength="8" placeholder="z. B. 10c"></label>
@@ -244,10 +256,12 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
       <div class="fig" id="qFig" hidden></div>
       <div id="qBody"></div>
       <div class="tools" id="qTools">
-        <button class="btn sec" type="button" id="bJoker">🃏 Joker (<span id="jLeft">0</span>)</button>
+        <button class="btn sec" type="button" id="bJoker">✂️ 50:50 (<span id="jLeft">0</span>)</button>
+        <button class="btn tipbtn" type="button" id="bTip">💡 Tipp-Karte (<span id="tLeft">0</span>)</button>
         <button class="btn ghost" type="button" id="bIdk">🤔 Weiß ich nicht – zeig’s mir</button>
       </div>
       <div class="jhint" id="jHint" hidden></div>
+      <div class="tipcard" id="tipCard" hidden></div>
       <div id="fb"></div>
       <div class="row" style="margin-top:16px;justify-content:space-between">
         <button class="btn done" type="button" id="bFinish">🏁 Fertig – Ergebnis anzeigen</button>
@@ -565,7 +579,7 @@ function valid(q){
   if(q.type==='num')return isFinite(q.ans);
   if(q.type==='sort')return q.items.length>=3&&new Set(q.items).size===q.items.length;
   return true;}
-function makeGen(g){for(let i=0;i<60;i++){let q=null;try{q=g.make();}catch(e){q=null;}if(valid(q)){q.t=g.t;q.d=g.d;q.p=g.p;q.gid=g.id;q.id='g:'+g.id;return q;}}return null;}
+function makeGen(g){for(let i=0;i<60;i++){let q=null;try{q=g.make();}catch(e){q=null;}if(valid(q)){if(!q.hint&&typeof HINTS!=='undefined'&&HINTS[g.id])q.hint=HINTS[g.id];q.t=g.t;q.d=g.d;q.p=g.p;q.gid=g.id;q.id='g:'+g.id;return q;}}return null;}
 
 /* ====== Figuren (SVG) ====== */
 let FIGN=0;
@@ -1004,6 +1018,54 @@ gen('e_sort','E',2,'1',()=>{const mass=Math.random()<.4;const U=mass?[['t',1000]
   const fs=pickN([0.6,0.8,0.95,1.05,1.25,1.5,0.7],4).map(f=>r2(c*f,4));if(new Set(fs).size<4)return null;
   const it=fs.map(v=>{const ok=U.filter(u=>{const x=v/u[1];return x>=0.001&&x<100000&&Math.abs(r2(x,3)-x)<1e-9;});if(!ok.length)return null;const u=ch(ok);return {v:v,s:de(v/u[1],3)+' '+u[0]};});if(it.some(x=>!x))return null;
   it.sort((a,b)=>a.v-b.v);return SORT({q:`Ordne die ${mass?'Massen':'Längen'} der Größe nach – die kleinste nach oben.`,items:it.map(x=>x.s),ex:`In ${mass?'kg':'m'} umgerechnet: ${it.map(x=>x.s+' = '+de(x.v,4)+(mass?' kg':' m')).join('; ')}.`,f:'Erst alles in dieselbe Einheit umrechnen, dann vergleichen.'});});
+
+/* ====== Hand-written starting hints for the Tipp-Karte (never reveal the result) ====== */
+const HINTS={
+ z_mul1:'Zerlege die größere Zahl in Zehner und Einer und rechne beide Teile einzeln.',z_mul2:'Rechne erst mal 10, dann den Rest, und addiere beides.',
+ z_div:'Welche Zahl mal den Teiler ergibt die erste Zahl? Probiere mit dem Einmaleins.',z_neg:'Denk an den Zahlenstrahl: Plus geht nach rechts, Minus nach links. Beim Malnehmen zählen nur die Vorzeichen.',
+ z_dec:'Rechne erst ohne Komma und zähle dann die Nachkommastellen beider Zahlen zusammen.',z_decdiv:'Verschiebe das Komma bei beiden Zahlen gleich weit, bis der Teiler keine Nachkommastelle mehr hat.',
+ z_fracadd:'Suche zuerst den Hauptnenner und erweitere beide Brüche.',z_fracmul:'Beim Malnehmen: Zähler · Zähler, Nenner · Nenner. Beim Teilen: mit dem Kehrbruch malnehmen.',
+ z_pot:'Schreibe die Potenz als Malaufgabe aus. Achte genau auf Klammern und Minuszeichen.',z_sci:'Setze das Komma so, dass genau eine Ziffer von 1 bis 9 davor steht. Zähle dann, wie viele Stellen es gewandert ist.',
+ z_round:'Markiere die Rundungsstelle und schau nur auf die Ziffer direkt dahinter.',z_sort1:'Hänge Nullen an, bis alle Zahlen gleich viele Nachkommastellen haben.',
+ z_sort2:'Rechne alles in Dezimalzahlen um, dann kannst du leicht vergleichen.',z_order:'Klammern zuerst, dann Potenzen, dann Punkt vor Strich.',z_sortfix:'Denk an den Merksatz „Klammer – Hoch – Punkt – Strich“.',
+ p_pct:'Rechne zuerst 1 % oder 10 % aus und gehe von dort weiter.',p_gw:'Teile den Betrag durch die Prozentzahl, dann hast du 1 %. Von dort aus auf 100 %.',
+ p_ps:'Teile den Anteil durch das Ganze. Das Ergebnis mal 100 ergibt die Prozentzahl.',p_rabatt:'Rechne zuerst aus, wie viel Euro der Rabatt ist, und ziehe das ab.',
+ p_bar:'Erweitere den Bruch so, dass unten 100 steht, oder teile Zähler durch Nenner.',p_umw:'Dezimalzahl mal 100 ergibt Prozent. Bruch: Zähler durch Nenner teilen.',
+ p_zins:'Benutze Kₙ = K₀ · (1 + p)ⁿ. Schreibe den Zinssatz als Dezimalzahl.',p_jz:'Jahreszinsen: Kapital mal Zinssatz als Dezimalzahl.',
+ p_change:'Berechne erst die Änderung in Euro und teile sie durch den alten Preis.',p_mwst:'Der Preis ohne Steuer entspricht 100 %, der Preis mit Steuer 119 %.',
+ p_rate:'Addiere Anzahlung und alle Raten. Vergleiche die Summe dann mit dem Barpreis.',p_tagezins:'Rechne zuerst die Jahreszinsen aus und nimm davon den Anteil Tage : 360.',
+ t_terms:'Sortiere: alle x-Glieder zusammen und alle Zahlen zusammen.',t_klammer:'Nimm die Zahl vor der Klammer mit jedem Glied in der Klammer mal.',
+ t_ausklammern:'Suche die größte Zahl, durch die beide Glieder teilbar sind.',t_eq1:'Bringe zuerst die Zahl ohne x auf die andere Seite, dann teile.',
+ t_eq2:'Bringe alle x auf die linke Seite und alle Zahlen auf die rechte.',t_eq3:'Löse zuerst die Klammer auf. Dann wie gewohnt: x nach links, Zahlen nach rechts.',
+ t_binom:'Welche binomische Formel passt? Achte auf das Mittelglied 2ab.',t_binom_r:'Ist die Zahl am Ende eine Quadratzahl? Prüfe dann, ob das Mittelglied passt.',
+ t_einsetzen:'Setze die Zahl mit Klammern ein. Rechne das Quadrat zuerst.',t_pq:'Lies p und q mit Vorzeichen ab und setze in die p-q-Formel ein.',
+ t_lgs:'Addiere die beiden Gleichungen – dann fällt y weg.',t_nullprod:'Ein Produkt ist null, wenn ein Faktor null ist. Setze jede Klammer einzeln gleich null.',
+ t_eqTR:'Bringe alle x-Glieder nach links und alle Zahlen nach rechts. Erst am Ende runden.',t_sortpq:'Ohne Normalform darfst du p und q noch nicht ablesen.',
+ l_slope:'Setze in m = (y₂ − y₁) : (x₂ − x₁) ein. Vorsicht bei negativen Zahlen!',l_wert:'Setze die Zahl für x ein und rechne aus.',
+ l_null:'Setze den Funktionsterm gleich null und löse nach x auf.',l_read:'Suche den Punkt auf der y-Achse und gehe von dort 1 Kästchen nach rechts.',
+ l_slide2:'Berechne zuerst m mit den beiden Punkten. Dann stelle b ein.',l_schnitt:'Stelle für jeden Tarif eine Funktion auf und setze beide gleich.',
+ l_auf:'Was kostet es immer (Startwert b)? Was kommt pro Einheit dazu oder weg (Steigung m)?',l_punkt:'Setze den Punkt in f(x) = mx + b ein und löse nach b auf.',
+ l_sortm:'Für die Steilheit zählt nur der Betrag von m. Das Vorzeichen und b spielen keine Rolle.',
+ q_scheitel:'Vergleiche mit f(x) = a(x − d)² + e. Achte auf das Vorzeichen in der Klammer.',q_slide2:'Suche zuerst den tiefsten Punkt der gestrichelten Parabel.',
+ q_wert:'Rechne zuerst die Klammer aus, dann das Quadrat, dann den Rest.',q_null:'Bringe die Zahl hinter der Klammer auf die andere Seite und ziehe die Wurzel. Denk an ±!',
+ q_read:'Lies den Scheitelpunkt ab und prüfe, wohin die Parabel offen ist.',q_hoehe:'Die größte Höhe hat der Ball im Scheitelpunkt: x = −b : (2a).',q_offen:'Schau auf die Zahl vor x²: Vorzeichen und Betrag.',
+ x_faktor:'Gehe von 100 % aus: kommt etwas dazu oder geht etwas weg?',x_verd:'Zähle zuerst, wie oft sich der Bestand verdoppelt.',x_hwz:'Zähle, wie viele Halbwertszeiten vergehen, und halbiere so oft.',
+ x_typ:'Prüfe die Differenzen und die Quotienten benachbarter Werte.',x_expo:'Startwert · Faktor hoch Anzahl der Schritte.',x_expo2:'Erstelle mit dem Taschenrechner eine kleine Wertetabelle Jahr für Jahr.',
+ g_pyth:'Welche Seite ist die Hypotenuse? Hypotenuse gesucht → addieren, Kathete gesucht → subtrahieren.',g_pythTR:'Stelle a² + b² = c² auf und löse nach der gesuchten Seite auf.',
+ g_winkel:'Welche Winkelsumme gilt hier? Dreieck 180°, Viereck 360°, Nebenwinkel 180°.',g_flaeche:'Suche die passende Flächenformel auf der Merkkarte.',
+ g_kreis:'Prüfe, ob Umfang oder Fläche gefragt ist, und ob r oder d gegeben ist.',
+ r_seite:'Markiere zum Winkel α: Gegenkathete, Ankathete, Hypotenuse. Welche zwei Seiten kommen vor?',r_winkel:'Welches Seitenverhältnis kennst du? Benutze dann die Umkehrfunktion (SHIFT).',
+ r_welche:'Bestimme zuerst, welche Seite die Gegenkathete, die Ankathete und die Hypotenuse zu α ist.',
+ k_quader:'Volumen: alle drei Kanten malnehmen. Oberfläche: die sechs Rechtecke addieren.',k_wuerfel:'Alle Kanten sind gleich lang.',
+ k_zyl:'Die Grundfläche ist ein Kreis: G = π · r².',k_spitz:'Spitze Körper haben ein {1/3} in der Volumenformel.',k_kugel:'Rechne zuerst r² oder r³ aus.',
+ k_sortfix:'Rechne jedes Volumen grob mit π ≈ 3 aus.',
+ w_laplace:'Zähle die günstigen Ergebnisse und alle möglichen Ergebnisse.',w_pfad:'Zeichne die passenden Pfade im Baum nach. Entlang eines Pfades malnehmen, Pfade addieren.',
+ w_erw:'Erwartete Anzahl = Anzahl der Versuche · Wahrscheinlichkeit.',
+ s_mittel:'Addiere alle Werte und teile durch ihre Anzahl.',s_median:'Sortiere die Werte zuerst der Größe nach.',s_span:'Suche den größten und den kleinsten Wert.',
+ s_box:'Erinnere dich an die Reihenfolge der fünf Kennwerte im Boxplot.',s_tab:'Rechne Note · Anzahl für jede Spalte, addiere und teile durch die Gesamtanzahl.',s_sortbox:'Der Median liegt genau in der Mitte.',
+ e_units:'Große Einheit → kleine Einheit: malnehmen. Kleine → große: teilen.',e_units2:'Flächen: Umrechnungszahl 100. Volumen: 1000. 1 dm³ = 1 l.',
+ e_dreisatz:'Rechne zuerst aus, was ein Stück kostet.',e_anti:'Mehr Helfer → weniger Zeit. Rechne zuerst die Gesamtarbeit aus.',
+ e_speed:'Rechne die Minuten zuerst in Stunden um.',e_massstab:'Nimm die Kartenlänge mit der Maßstabszahl mal und rechne die Einheit um.',e_sort:'Rechne alle Angaben in dieselbe Einheit um.'};
 </script>
 <script>
 (function(){
@@ -1070,17 +1132,17 @@ const RES_SUB=['Du hast heute {n} Aufgaben gelöst und {p} Punkte gesammelt.','{
  'Tipp: Ein paar Aufgaben jeden Tag bringen mehr als eine lange Runde kurz vor der Prüfung.'];
 
 /* ---------------- Zustand & Startseite ---------------- */
-const S={name:'',kl:'',size:10,diff:0,part:'b',topics:Object.keys(TOPICS),list:[],n:0,ok:0,pts:0,streak:0,best:0,lv:1.4,joker:1,lastT:'',lastG:'',byT:{},byP:{},facts:[],badges:[],cur:null,ans:false,roundStart:0};
+const S={name:'',kl:'',size:10,diff:0,part:'b',topics:Object.keys(TOPICS),list:[],n:0,ok:0,pts:0,streak:0,best:0,lv:1.4,joker:1,tips:2,used:0,lastT:'',lastG:'',byT:{},byP:{},facts:[],badges:[],cur:null,ans:false,roundStart:0};
 const SIZES=[[10,'10 Aufgaben'],[20,'20 Aufgaben'],[30,'30 Aufgaben'],[0,'Endlos – bis ich fertig bin']];
 const DIFFS=[[0,'Gemischt (passt sich an dich an)'],[1,'★ Basis'],[2,'★★ Standard'],[3,'★★★ Profi']];
 const PARTS=[['b','🧠 + 🧮 Beide Teile'],['1','🧠 Teil 1 – ohne Taschenrechner'],['2','🧮 Teil 2 – mit Taschenrechner']];
 const PNOTE={b:'Gemischt wie in der echten Prüfung. Am Symbol jeder Aufgabe siehst du, ob du den Taschenrechner benutzen darfst.',
  '1':'Kopfrechnen und schriftlich rechnen: Lege Zettel und Stift bereit, aber keinen Taschenrechner.','2':'Lege deinen Taschenrechner (Modus DEG) und die Formelsammlung bereit.'};
-let selSize=P.size!=null?P.size:10,selDiff=P.diff||0,selPart=P.part||'b',selTopics=(P.topics&&P.topics.length)?P.topics.filter(k=>TOPICS[k]):Object.keys(TOPICS);
+let selSize=P.size!=null?P.size:10,selDiff=P.diff||0,selPart=['b','1','2'].indexOf(String(P.part))>=0?String(P.part):'b',selTopics=(P.topics&&P.topics.length)?P.topics.filter(k=>TOPICS[k]):Object.keys(TOPICS);
 function okFilter(t,d,p,topics,part){return topics.indexOf(t)>=0&&(!d||true)&&(part==='b'||p===part);}
 function availCount(){const f=q=>selTopics.indexOf(q.t)>=0&&(!selDiff||q.d===selDiff)&&(selPart==='b'||q.p===selPart);return {st:ALL.filter(f).length,gn:GEN.filter(f).length};}
 function segRender(el,items,val,cb){el.innerHTML=items.map(([v,l])=>`<button type="button" class="chip" aria-pressed="${v===val}" data-v="${v}">${l}</button>`).join('');
-  el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const v=isNaN(+b.dataset.v)?b.dataset.v:+b.dataset.v;cb(v);segRender(el,items,v,cb);checkStart();});}
+  el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const v=typeof items[0][0]==='number'?+b.dataset.v:b.dataset.v;cb(v);segRender(el,items,v,cb);checkStart();});}
 function topicsRender(){const cnt={},gcnt={};ALL.forEach(q=>cnt[q.t]=(cnt[q.t]||0)+1);GEN.forEach(g=>gcnt[g.t]=(gcnt[g.t]||0)+1);
   $('chipsT').innerHTML=Object.keys(TOPICS).map(k=>`<button type="button" class="chip" aria-pressed="${selTopics.indexOf(k)>=0}" data-k="${k}">${TOPICS[k][1]} ${TOPICS[k][0]} <span class="muted" style="font-weight:400">${cnt[k]||0}${gcnt[k]?' + '+gcnt[k]+' ∞':''}</span></button>`).join('');
   $('chipsT').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const k=b.dataset.k;const i=selTopics.indexOf(k);if(i>=0)selTopics.splice(i,1);else selTopics.push(k);topicsRender();checkStart();});}
@@ -1127,7 +1189,7 @@ function startRound(keep){
   P.name=S.name;P.kl=S.kl;P.size=selSize;P.diff=selDiff;P.part=selPart;P.topics=selTopics.slice();store();
   S.size=selSize;S.diff=selDiff;S.part=selPart;S.topics=selTopics.slice();
   if(!keep)Object.assign(S,{list:[],n:0,ok:0,pts:0,streak:0,best:0,lv:1.4,lastT:'',lastG:'',byT:{},byP:{},facts:[],badges:[]});
-  S.roundStart=S.n;S.joker=S.size?Math.max(1,Math.round(S.size/10)):2;
+  S.roundStart=S.n;S.joker=S.size?Math.max(1,Math.round(S.size/10)):3;S.tips=S.size?Math.max(2,Math.round(S.size/10)*2):5;
   $('who').textContent=S.name+' · Klasse '+S.kl;show('vQuiz');ask();}
 $('bStart').onclick=()=>startRound(false);
 
@@ -1148,7 +1210,7 @@ function ask(){
   $('qText').innerHTML=fmt(q.q);
   $('qTab').hidden=!q.tab;$('qTab').innerHTML=q.tab?tabHtml(q.tab):'';
   const fh=q.type==='slide'?'':figHtml(q.fig);$('qFig').hidden=!fh;$('qFig').innerHTML=fh;
-  $('fb').innerHTML='';$('bNext').hidden=true;$('qTools').hidden=false;$('jHint').hidden=true;
+  $('fb').innerHTML='';$('bNext').hidden=true;$('qTools').hidden=false;$('jHint').hidden=true;$('tipCard').hidden=true;$('tipCard').innerHTML='';S.helped=false;S.used50=false;S.usedTip=false;
   const body=$('qBody');
   if(q.type==='mc'){const order=[0,1,2,3].sort(()=>Math.random()-.5);S.order=order;
     body.innerHTML='<div class="opts" id="qOpts">'+order.map((oi,k)=>`<button type="button" class="opt" data-oi="${oi}"><span class="k">${'ABCD'[k]}</span><span>${fmt(q.o[oi])}</span></button>`).join('')+'</div>';
@@ -1167,9 +1229,7 @@ function ask(){
     body.innerHTML='<div class="fig" id="slFig"></div><div class="sliders">'+q.sl.map((s,i)=>`<div class="sl"><label for="sl${i}"><span>${esc(s.label)}</span>${s.hide?'':'<output id="slo'+i+'"></output>'}</label><input type="range" id="sl${i}" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.val}"></div>`).join('')+'</div><div class="row"><button type="button" class="btn pri" id="slGo">Prüfen</button></div>';
     const upd=()=>{S.vals=q.sl.map((s,i)=>parseFloat($('sl'+i).value));$('slFig').innerHTML=q.draw(S.vals);q.sl.forEach((s,i)=>{if(!s.hide)$('slo'+i).textContent=s.fmt?s.fmt(S.vals[i]):de(S.vals[i]);});};
     q.sl.forEach((s,i)=>$('sl'+i).addEventListener('input',upd));upd();$('slGo').onclick=()=>answer(q.check(S.vals),{});}
-  const jOK=q.type==='mc'||q.type==='num'||q.type==='sort'||(q.type==='slide'&&q.hint);
-  $('jLeft').textContent=S.joker;$('bJoker').disabled=S.joker<1||!jOK;
-  $('bJoker').title=q.type==='mc'?'Entfernt zwei falsche Antworten':q.type==='num'?'Zeigt dir einen Bereich, in dem das Ergebnis liegt':q.type==='sort'?'Setzt die erste Karte richtig':'Gibt dir einen Tipp';
+  updHelp();
   hud();}
 
 /* Eingabe auswerten */
@@ -1185,26 +1245,65 @@ function submitSort(){if(S.ans)return;const o=sortOrder();answer(o.every((x,k)=>
 
 /* Sortieren per Ziehen */
 function setupSort(ul){let drag=null;const GAP=8;
-  const move=(li,d)=>{if(S.ans)return;if(d<0){const p=li.previousElementSibling;if(p&&!p.classList.contains('fixed'))ul.insertBefore(li,p);}else{const n=li.nextElementSibling;if(n)ul.insertBefore(n,li);}};
+  const move=(li,d)=>{if(S.ans)return;if(d<0){const p=li.previousElementSibling;if(p&&!p.classList.contains('fixed'))ul.insertBefore(li,p);}else{const n=li.nextElementSibling;if(n&&!n.classList.contains('fixed'))ul.insertBefore(n,li);}};
   ul.addEventListener('click',e=>{const b=e.target.closest('button[data-d]');if(!b)return;const li=b.closest('li');if(li.classList.contains('fixed'))return;move(li,+b.dataset.d);});
   ul.addEventListener('pointerdown',e=>{if(S.ans)return;const li=e.target.closest('li');if(!li||e.target.closest('button')||li.classList.contains('fixed'))return;
     drag={li:li,y:e.clientY,id:e.pointerId};li.classList.add('dragging');try{li.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
   ul.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;const li=drag.li;let dy=e.clientY-drag.y;
     const prev=li.previousElementSibling,next=li.nextElementSibling;
     if(dy<0&&prev&&!prev.classList.contains('fixed')){const h=prev.offsetHeight+GAP;if(-dy>h/2){ul.insertBefore(li,prev);drag.y-=h;dy+=h;}}
-    else if(dy>0&&next){const h=next.offsetHeight+GAP;if(dy>h/2){ul.insertBefore(next,li);drag.y+=h;dy-=h;}}
+    else if(dy>0&&next&&!next.classList.contains('fixed')){const h=next.offsetHeight+GAP;if(dy>h/2){ul.insertBefore(next,li);drag.y+=h;dy-=h;}}
     li.style.transform='translateY('+dy+'px)';});
   const end=()=>{if(!drag)return;drag.li.style.transform='';drag.li.classList.remove('dragging');drag=null;};
   ul.addEventListener('pointerup',end);ul.addEventListener('pointercancel',end);ul.addEventListener('lostpointercapture',end);}
 
-/* Joker */
-function niceRange(a){const s=Math.max(Math.abs(a)*0.25,2);const st=Math.pow(10,Math.floor(Math.log10(s)));let lo=a-s*(0.3+0.5*Math.random()),hi=a+s*(0.3+0.5*Math.random());lo=Math.floor(lo/st)*st;hi=Math.ceil(hi/st)*st;if(lo>=a)lo-=st;if(hi<=a)hi+=st;return [lo,hi];}
-$('bJoker').onclick=()=>{const q=S.cur;if(S.ans||S.joker<1)return;
-  if(q.type==='mc'){const wrong=[1,2,3].sort(()=>Math.random()-.5).slice(0,2);$('qBody').querySelectorAll('.opt').forEach(b=>{if(wrong.indexOf(+b.dataset.oi)>=0){b.classList.add('gone');b.disabled=true;}});toast('🃏 Zwei falsche Antworten sind weg!');}
-  else if(q.type==='num'){const h=q.hint||(()=>{const r=niceRange(q.ans);return 'Das Ergebnis liegt zwischen '+de(r[0])+' und '+de(r[1])+'.';})();$('jHint').innerHTML='🃏 '+fmt(h);$('jHint').hidden=false;}
-  else if(q.type==='sort'){const ul=$('sortL');const li=[...ul.children].find(x=>+x.dataset.i===0);ul.insertBefore(li,ul.firstChild);li.classList.add('fixed');toast('🃏 Die oberste Karte liegt jetzt richtig!');}
-  else if(q.hint){$('jHint').innerHTML='🃏 '+fmt(q.hint);$('jHint').hidden=false;}
-  S.joker--;$('jLeft').textContent=S.joker;$('bJoker').disabled=true;};
+/* ---------------- Joker & Tipp-Karten ---------------- */
+const MERK={
+ Z:['Klammern → Potenzen → Punkt vor Strich.','Minus mal Minus ergibt Plus.','Brüche addieren: erst gleichnamig machen. Durch einen Bruch teilen: mit dem Kehrbruch malnehmen.','{1/2} = 0,5 · {1/4} = 0,25 · {1/5} = 0,2 · {1/8} = 0,125'],
+ P:['Prozentwert = Grundwert · p %','Grundwert = Prozentwert : p %','Prozentsatz = Prozentwert : Grundwert','Wachstum: Faktor 1 + p · Abnahme: Faktor 1 − p','Zinseszins: Kₙ = K₀ · (1 + p)ⁿ'],
+ T:['Was du auf einer Seite rechnest, rechnest du auch auf der anderen.','(a + b)² = a² + 2ab + b² · (a − b)² = a² − 2ab + b² · (a + b)(a − b) = a² − b²','p-q-Formel: x = −p/2 ± √((p/2)² − q)','Probe: Lösung in die Gleichung einsetzen.'],
+ L:['f(x) = mx + b: m ist die Steigung, b der y-Achsenabschnitt.','m = (y₂ − y₁) : (x₂ − x₁)','Nullstelle: f(x) = 0 setzen und nach x auflösen.','Schnittpunkt: Funktionsterme gleichsetzen.'],
+ Q:['Scheitelpunktform: f(x) = a(x − d)² + e → S(d|e)','(x − 3) heißt 3 nach rechts, (x + 3) heißt 3 nach links.','a > 0: nach oben offen · a < 0: nach unten offen','|a| > 1: schmaler · |a| < 1: breiter','Scheitelstelle bei ax² + bx + c: x = −b : (2a)'],
+ X:['f(x) = a · bˣ: a ist der Startwert, b der Wachstumsfaktor.','Gleiche Differenzen → linear · gleiche Quotienten → exponentiell.','Halbwertszeit: Danach ist nur noch die Hälfte da.','Bestand nach n Schritten: Startwert · qⁿ (nicht n · p %).'],
+ G:['Pythagoras: a² + b² = c² – c ist die Hypotenuse (gegenüber dem rechten Winkel).','Winkelsumme: Dreieck 180°, Viereck 360°.','Kreis: A = π · r² · u = 2 · π · r','Dreieck: A = {1/2} · g · h · Trapez: A = {1/2} · (a + c) · h'],
+ R:['sin(α) = Gegenkathete : Hypotenuse','cos(α) = Ankathete : Hypotenuse','tan(α) = Gegenkathete : Ankathete','Winkel gesucht → SHIFT + sin/cos/tan. Taschenrechner auf DEG!'],
+ K:['Quader: V = a · b · c · Würfel: V = a³','Prisma und Zylinder: V = G · h (Zylinder: G = π · r²)','Pyramide und Kegel: V = {1/3} · G · h','Kugel: V = {4/3} · π · r³ · O = 4 · π · r²','1 dm³ = 1 l · 1 cm³ = 1 ml'],
+ W:['Laplace: P = günstige : mögliche Ergebnisse','Gegenereignis: P(nicht A) = 1 − P(A)','Pfadregel: entlang eines Pfades malnehmen.','Summenregel: mehrere Pfade addieren.','„Mindestens eins“ → über das Gegenereignis rechnen.'],
+ S:['Mittelwert = Summe : Anzahl','Median: erst sortieren, dann den mittleren Wert nehmen.','Spannweite = Maximum − Minimum','Boxplot: Minimum – unteres Quartil – Median – oberes Quartil – Maximum'],
+ E:['Länge: 1 km = 1000 m · 1 m = 100 cm · 1 cm = 10 mm','Fläche: Umrechnungszahl 100 · Volumen: Umrechnungszahl 1000','1 h = 60 min · 1 min = 60 s','Dreisatz: erst auf 1 rechnen, dann auf die gesuchte Menge.']};
+function normTxt(x){return plain(x).replace(/[\s  ]/g,'').toLowerCase();}
+function hasNum(txt,v){const n=de(v,6).replace(/[ ]/g,'');const t=plain(txt).replace(/[  ]/g,'');const re=new RegExp('(^|[^0-9,])'+n.replace(/[−\-]/,'[−-]?').replace(/,/,'\\,')+'(?![0-9]|,[0-9])');return re.test(t);}
+function spoils(txt,q){if(!txt)return true;
+  if(q.type==='mc'){const r=normTxt(q.o[0]);if(r.length>=1&&normTxt(txt).indexOf(r)>=0)return true;const m=plain(q.o[0]).match(/−?\d[\d .]*(,\d+)?/g);if(m&&m.length===1&&!/[a-zäöüß]{3,}/i.test(q.o[0].replace(/km|cm|mm|ml|min/g,''))){const v=parseNum(m[0]);if(isFinite(v)&&Math.abs(v)>=1&&hasNum(txt,v))return true;}return false;}
+  if(q.type==='num'){if(hasNum(txt,q.ans))return true;if(q.show&&normTxt(txt).indexOf(normTxt(q.show))>=0)return true;return false;}
+  if(q.type==='sort')return /<|→|;/.test(txt)||q.items.filter(it=>txt.indexOf(plain(it))>=0).length>=2;
+  if(q.type==='slide'){if(q.sv&&q.sv.some(v=>v!==0&&hasNum(txt,v)))return true;return false;}
+  return false;}
+function firstStep(q){return q.hint||'';}
+function updHelp(){const q=S.cur;$('jLeft').textContent=S.joker;$('tLeft').textContent=S.tips;
+  const j50=q.type==='mc'||q.type==='num'||(q.type==='sort'&&q.items.length>=4);
+  $('bJoker').disabled=S.joker<1||!j50||S.used50;$('bTip').disabled=S.tips<1||S.usedTip;
+  $('bJoker').title=!j50?'Bei dieser Aufgabe gibt es kein 50:50 – nimm eine Tipp-Karte!':q.type==='mc'?'Entfernt zwei falsche Antworten':q.type==='num'?'Zeigt dir zwei Zahlen – eine davon ist richtig':'Legt die oberste und die unterste Karte richtig';
+  $('bTip').title='Zeigt dir einen Lösungsansatz und die wichtigsten Formeln';}
+function decOf(q){const s=q.show!=null?String(q.show):de(q.ans);const m=s.match(/,(\d+)/);return m?m[1].length:0;}
+function fmtN(v,dec){return dec?deFix(v,dec):de(v,6);}
+function wrongNum(q){const a=q.ans,dec=decOf(q),st=dec?Math.pow(10,-dec):(Math.abs(a)>=50?Math.pow(10,Math.max(0,Math.floor(Math.log10(Math.abs(a)))-1)):1);
+  const c=[a*10,a/10,-a,a+st,a-st,a*2,a/2,a+10*st,a-10*st].filter(v=>Math.abs(v-a)>q.tol*3+1e-9&&isFinite(v)&&(a<0||v>=0||Math.random()<.3));
+  const ok=c.filter(v=>{const t=fmtN(v,dec);return t!==fmtN(a,dec)&&!(dec===0&&!Number.isInteger(v));});return ok.length?pick(ok):a+st*3;}
+$('bJoker').onclick=()=>{const q=S.cur;if(S.ans||S.joker<1||S.used50)return;
+  if(q.type==='mc'){const wrong=[1,2,3].sort(()=>Math.random()-.5).slice(0,2);$('qBody').querySelectorAll('.opt').forEach(b=>{if(wrong.indexOf(+b.dataset.oi)>=0){b.classList.add('gone');b.disabled=true;}});toast('✂️ 50:50 – zwei falsche Antworten sind weg!');}
+  else if(q.type==='num'){const dec=decOf(q),w=wrongNum(q),two=Math.random()<.5?[q.ans,w]:[w,q.ans];
+    $('jHint').innerHTML='✂️ <b>50:50:</b> Eine dieser beiden Zahlen ist richtig. Tippe sie an oder rechne nach:<div class="chips50">'+two.map(v=>`<button type="button" data-v="${fmtN(v,dec)}">${fmtN(v,dec)}${q.unit?' '+esc(q.unit):''}</button>`).join('')+'</div>';$('jHint').hidden=false;
+    $('jHint').querySelectorAll('button').forEach(b=>b.onclick=()=>{if(S.ans)return;$('numIn').value=b.dataset.v;submitNum();});}
+  else if(q.type==='sort'){const ul=$('sortL'),n=q.items.length;const top=[...ul.children].find(x=>+x.dataset.i===0),bot=[...ul.children].find(x=>+x.dataset.i===n-1);
+    ul.insertBefore(top,ul.firstChild);ul.appendChild(bot);top.classList.add('fixed');bot.classList.add('fixed');toast('✂️ 50:50 – die oberste und die unterste Karte liegen jetzt richtig!');}
+  S.joker--;S.used50=true;S.helped=true;updHelp();};
+$('bTip').onclick=()=>{const q=S.cur;if(S.ans||S.tips<1||S.usedTip)return;const st=firstStep(q);const M=MERK[q.t]||[];
+  $('tipCard').innerHTML=`<div class="tch"><span>💡 Tipp-Karte</span><span>${TOPICS[q.t][1]} ${esc(TOPICS[q.t][0])}</span></div><div class="tcb">`+
+    (st?`<div class="step"><div class="lbl">So kannst du anfangen</div>${fmt(st)}</div>`:'')+
+    `<div><div class="lbl">Merkkarte</div><ul>${M.map(m=>'<li>'+fmt(m)+'</li>').join('')}</ul></div></div>`;
+  $('tipCard').hidden=false;S.tips--;S.usedTip=true;S.helped=true;updHelp();
+  try{$('tipCard').scrollIntoView({behavior:'smooth',block:'nearest'});}catch(e){}};
 $('bIdk').onclick=()=>answer(false,{idk:true});
 
 /* ---------------- Auswertung ---------------- */
@@ -1214,9 +1313,10 @@ function answer(right,info){
   S.n++;const bt=S.byT[q.t]||(S.byT[q.t]={n:0,ok:0});bt.n++;const bp=S.byP[q.p]||(S.byP[q.p]={n:0,ok:0});bp.n++;
   let head,ico,cls;
   if(right){S.ok++;bt.ok++;bp.ok++;S.streak++;S.best=Math.max(S.best,S.streak);
-    const gain=q.d*10+(S.streak>=3?5:0)+(q.type!=='mc'?5:0);S.pts+=gain;S.lv=Math.min(3.2,S.lv+0.3);
+    let gain=q.d*10+(S.streak>=3?5:0)+(q.type!=='mc'?5:0);if(S.helped)gain=Math.ceil(gain/2);S.pts+=gain;S.lv=Math.min(3.2,S.lv+0.3);
     head=(Math.random()<.25?TOPIC_OK[q.t]+' ':'')+pickFresh(OK,'lastFb',12);ico='🎉';cls='good';
-    head=fmt(head)+` <span style="font-size:15px;font-weight:400">(+${gain} Punkte)</span>`;
+    head=fmt(head)+` <span style="font-size:15px;font-weight:400">(+${gain} Punkte${S.helped?', mit Hilfe':''})</span>`;
+    if(S.streak>0&&S.streak%5===0){S.tips++;setTimeout(()=>toast('🎁 Bonus: Für deine 5er-Serie bekommst du eine neue Tipp-Karte!'),2600);}
     if([3,5,10,15,20,30].indexOf(S.streak)>=0){const t={3:'🔥 3 richtig hintereinander!',5:'🔥🔥 5er-Serie – du bist on fire!',10:'🚀 10 richtig in Folge – Wahnsinn!',15:'🌟 15er-Serie – unglaublich!',20:'👑 20 in Folge – Legende!',30:'🏆 30 in Folge!!!'}[S.streak];toast(t);addBadge(t.replace(/!+$/,''));}
   }else{S.streak=0;S.lv=Math.max(1,S.lv-0.45);S.pts+=2;
     head=fmt(info.idk?pick(IDK):pickFresh(BAD,'lastFb2',12))+' <span style="font-size:15px;font-weight:400">(+2 Übungspunkte)</span>';ico=info.idk?'💡':'🌱';cls='learn';}
