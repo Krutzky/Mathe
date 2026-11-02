@@ -1019,6 +1019,55 @@ gen('e_sort','E',2,'1',()=>{const mass=Math.random()<.4;const U=mass?[['t',1000]
   const it=fs.map(v=>{const ok=U.filter(u=>{const x=v/u[1];return x>=0.001&&x<100000&&Math.abs(r2(x,3)-x)<1e-9;});if(!ok.length)return null;const u=ch(ok);return {v:v,s:de(v/u[1],3)+' '+u[0]};});if(it.some(x=>!x))return null;
   it.sort((a,b)=>a.v-b.v);return SORT({q:`Ordne die ${mass?'Massen':'Längen'} der Größe nach – die kleinste nach oben.`,items:it.map(x=>x.s),ex:`In ${mass?'kg':'m'} umgerechnet: ${it.map(x=>x.s+' = '+de(x.v,4)+(mass?' kg':' m')).join('; ')}.`,f:'Erst alles in dieselbe Einheit umrechnen, dann vergleichen.'});});
 
+
+/* ---------- Zusätzliche Teil-2-Aufgaben (mit Taschenrechner) ---------- */
+gen('z_sciTR','Z',2,'2',()=>{const C=ch([['Die Erde ist etwa',1.496,8,'km von der Sonne entfernt. Licht legt etwa 3 · 10⁵ km pro Sekunde zurück. Wie viele Sekunden braucht das Licht von der Sonne zur Erde? Runde auf Ganze.',v=>v/3e5,0,'s'],
+  ['Ein Blatt Papier ist etwa',ri(10,12)/10,-1,'mm dick. Wie hoch (in mm) ist ein Stapel aus 2,5 · 10⁴ Blättern? Runde auf Ganze.',v=>v*2.5e4,0,'mm'],
+  ['Ein Wassertropfen hat etwa',ri(3,6),-2,'ml. Wie viele Tropfen sind in 1 Liter (1000 ml)? Runde auf Ganze.',v=>1000/v,0,'Tropfen'],
+  ['Ein Mensch hat etwa',ri(25,45)/10,12,'rote Blutkörperchen pro Liter Blut und etwa 5 Liter Blut. Wie viele sind das? Gib die Zahl vor dem „· 10¹³“ an, gerundet auf zwei Nachkommastellen.',v=>v*5/1e13,2,'· 10¹³']]);
+  const m=C[1],e=C[2],v=m*Math.pow(10,e),res=r2(C[4](v),C[5]);
+  return NUM({q:`${C[0]} ${de(m)} · 10${sup(e)} ${C[3]}`,ans:res,tol:C[5]?0.011:1.01,unit:C[6],show:C[5]?de(res,2):de(res),
+  ex:`Mit dem Taschenrechner: ${de(m)} · 10${sup(e)} in die Rechnung einsetzen (Taste ×10ˣ bzw. EXP). Ergebnis ≈ ${C[5]?de(res,2):de(res)} ${C[6]}.`,f:'Zehnerpotenzen immer mit der Taste ×10ˣ (EXP) eingeben – nicht mit „· 10 ^“, sonst stimmen die Klammern oft nicht.'});});
+gen('z_wurzTR','Z',2,'2',()=>{const k=ri(0,2);
+  if(k===0){const n=ri(2,300);if(Number.isInteger(Math.sqrt(n)))return null;const r=Math.sqrt(n);return NUM({q:`Berechne √${n} und runde auf zwei Nachkommastellen.`,ans:r2(r,2),tol:0.006,show:de(r,2),ex:`√${n} ≈ ${de(r,5)} ≈ ${de(r,2)}. Kontrolle: ${Math.floor(r)}² = ${Math.floor(r)**2} und ${Math.ceil(r)}² = ${Math.ceil(r)**2}.`,f:'Schätze vorher: Zwischen welchen Quadratzahlen liegt die Zahl? So erkennst du Tippfehler.'});}
+  if(k===1){const b=ri(11,39)/10,e=ri(3,6),r=Math.pow(b,e);return NUM({q:`Berechne ${de(b)}${sup(e)} und runde auf zwei Nachkommastellen.`,ans:r2(r,2),tol:0.006,show:de(r,2),ex:`${de(b)}${sup(e)} = ${Array(e).fill(de(b)).join(' · ')} ≈ ${de(r,2)}. Am Taschenrechner mit der Taste xʸ bzw. ^.`,f:'Potenzen mit der Taste ^ oder xʸ eingeben.'});}
+  const a=ri(12,99)/10,b=ri(12,99)/10,c=ri(2,9),r=(a+b)/c;return NUM({q:`Berechne (${de(a)} + ${de(b)}) : ${c} und runde auf zwei Nachkommastellen.`,ans:r2(r,2),tol:0.006,show:de(r,2),
+  ex:`Zuerst die Klammer: ${de(a)} + ${de(b)} = ${de(a+b)}. Dann : ${c} ≈ ${de(r,2)}.`,f:'Klammern am Taschenrechner mit eingeben – sonst rechnet er Punkt vor Strich!'});});
+gen('t_formTR','T',2,'2',()=>{const k=ri(0,2);
+  if(k===0){const V=ri(200,2000),r=ri(30,90)/10,h=V/(Math.PI*r*r);return NUM({q:`Eine zylinderförmige Dose soll ${V} cm³ fassen und hat den Radius ${de(r)} cm. Stelle V = π · r² · h nach h um und berechne die Höhe. Runde auf zwei Nachkommastellen.`,ans:r2(h,2),tol:0.011,unit:'cm',show:de(h,2),
+   ex:`h = V : (π · r²) = ${V} : (π · ${de(r*r,2)}) ≈ ${de(h,2)} cm.`,f:'Erst die Formel umstellen, dann einsetzen. So vermeidest du Rechenfehler.'});}
+  if(k===1){const A=ri(20,400),g=ri(40,250)/10,h=2*A/g;return NUM({q:`Ein Dreieck hat den Flächeninhalt ${A} cm² und die Grundseite ${de(g)} cm. Stelle A = {1/2} · g · h nach h um und berechne die Höhe. Runde auf zwei Nachkommastellen.`,ans:r2(h,2),tol:0.011,unit:'cm',show:de(h,2),
+   ex:`h = 2 · A : g = 2 · ${A} : ${de(g)} ≈ ${de(h,2)} cm.`,f:'Das {1/2} wird beim Umstellen zu „· 2“.'});}
+  const s=ri(50,400),v=ri(30,130),t=s/v*60;return NUM({q:`Ein Bus fährt ${s} km mit durchschnittlich ${v} km/h. Wie viele Minuten braucht er? Runde auf Ganze.`,ans:Math.round(t),tol:1.01,unit:'min',show:de(Math.round(t)),
+   ex:`t = s : v = ${s} : ${v} ≈ ${de(s/v,4)} h. Mal 60: ≈ ${de(Math.round(t))} min.`,f:'Zeit = Strecke : Geschwindigkeit. Das Ergebnis ist in Stunden.'});});
+gen('l_sachTR','L',2,'2',()=>{const b=ri(80,400)*10,m=-ri(15,90),y=ri(1,Math.floor(b/(-m))-1)*(-m)+ri(0,9),k=ri(0,1);
+  if(k===0){const x=(y-b)/m;return NUM({q:`In einem Tank sind ${de(b)} Liter Heizöl. Pro Tag werden ${-m} Liter verbraucht. Nach wie vielen Tagen sind nur noch ${de(y)} Liter übrig? Runde auf eine Nachkommastelle.`,ans:r2(x,1),tol:0.051,unit:'Tage',show:de(x,1),
+   ex:`f(x) = ${de(b)} − ${-m}x. Gleichsetzen: ${de(b)} − ${-m}x = ${de(y)} → ${-m}x = ${de(b-y)} → x ≈ ${de(x,1)}.`,f:'Funktion aufstellen, gleich dem gesuchten Wert setzen, nach x auflösen.'});}
+  const x0=b/(-m);return NUM({q:`In einem Tank sind ${de(b)} Liter Heizöl. Pro Tag werden ${-m} Liter verbraucht. Nach wie vielen Tagen ist der Tank leer? Runde auf eine Nachkommastelle.`,ans:r2(x0,1),tol:0.051,unit:'Tage',show:de(x0,1),
+   ex:`f(x) = ${de(b)} − ${-m}x = 0 → x = ${de(b)} : ${-m} ≈ ${de(x0,1)}.`,f:'Leer heißt: Nullstelle der Funktion.'});});
+gen('q_nullTR','Q',3,'2',()=>{const a=ch([1,1,2,-1,0.5]),p=ri(-9,9),q=ri(-30,10);const D=p*p-4*a*q;if(D<=0)return null;const x1=(-p+Math.sqrt(D))/(2*a),x2=(-p-Math.sqrt(D))/(2*a);if(Number.isInteger(r2(x1,6)))return null;
+  const hi=Math.max(x1,x2),lo=Math.min(x1,x2),k=Math.random()<.5;return NUM({q:`Berechne die ${k?'größere':'kleinere'} Nullstelle von f(x) = ${poly(a,p,q)}. Runde auf zwei Nachkommastellen.`,ans:r2(k?hi:lo,2),tol:0.011,show:de(k?hi:lo,2),
+  ex:`${a!==1?'Erst durch '+de(a)+' teilen: x² '+(p/a<0?'− '+de(-p/a,4):'+ '+de(p/a,4))+'x '+(q/a<0?'− '+de(-q/a,4):'+ '+de(q/a,4))+' = 0. ':''}p-q-Formel: x = ${de(-p/a/2,4)} ± √(${de((p/a/2)**2,4)} − ${par(r2(q/a,4))}) ≈ ${de(-p/a/2,4)} ± ${de(Math.sqrt(D)/(2*Math.abs(a)),4)}. Also x₁ ≈ ${de(hi,2)} und x₂ ≈ ${de(lo,2)}.`,f:'Steht vor x² keine 1, teile zuerst die ganze Gleichung durch diese Zahl.'});});
+gen('w_baumTR','W',3,'2',()=>{const p=ri(55,95)/100,n=ri(2,4),k=ri(0,2);let ans,ex,q;const pp=de(p*100)+' %';
+  if(k===0){ans=Math.pow(p,n)*100;q=`Ein Basketballer trifft einen Freiwurf mit ${pp}. Er wirft ${n}-mal. Wie groß ist die Wahrscheinlichkeit, dass er jedes Mal trifft?`;ex=`Pfadregel: ${Array(n).fill(de(p)).join(' · ')} = ${de(p,2)}${sup(n)} ≈ ${de(ans/100,4)} ≈ ${de(ans,1)} %.`;}
+  else if(k===1){ans=Math.pow(1-p,n)*100;q=`Ein Basketballer trifft einen Freiwurf mit ${pp}. Er wirft ${n}-mal. Wie groß ist die Wahrscheinlichkeit, dass er nie trifft?`;ex=`Daneben mit ${de(1-p,2)}. Pfadregel: ${de(1-p,2)}${sup(n)} ≈ ${de(ans,1)} %.`;}
+  else{ans=(1-Math.pow(1-p,n))*100;q=`Ein Basketballer trifft einen Freiwurf mit ${pp}. Er wirft ${n}-mal. Wie groß ist die Wahrscheinlichkeit, dass er mindestens einmal trifft?`;ex=`Gegenereignis „nie getroffen“: ${de(1-p,2)}${sup(n)}. P = 1 − ${de(1-p,2)}${sup(n)} ≈ ${de(ans,1)} %.`;}
+  return NUM({q:q+' Gib das Ergebnis in Prozent an, gerundet auf eine Nachkommastelle.',ans:r2(ans,1),tol:0.11,unit:'%',show:de(ans,1),ex:ex,f:'„Mindestens einmal“ rechnet man am schnellsten über das Gegenereignis.'});});
+gen('s_mittelTR','S',2,'2',()=>{const n=ri(6,9),v=Array.from({length:n},()=>ri(100,400)/10),s=v.reduce((a,b)=>a+b,0),m=s/n,k=Math.random()<.5;
+  if(k)return NUM({q:`Tagestemperaturen in °C: ${v.map(x=>de(x)).join('; ')}. Berechne den Mittelwert. Runde auf zwei Nachkommastellen.`,ans:r2(m,2),tol:0.011,unit:'°C',show:de(m,2),ex:`Summe: ${de(s,2)}. Durch ${n}: ${de(s,2)} : ${n} ≈ ${de(m,2)} °C.`,f:'Mit dem Taschenrechner: alle Werte addieren, Gleich-Taste, dann teilen.'});
+  const t=r2(m+ri(5,30)/10,1),need=t*(n+1)-s;return NUM({q:`Eine Weitspringerin hat ${n} Sprünge gemacht: ${v.map(x=>de(x)).join('; ')} (in dm). Wie weit muss der nächste Sprung sein, damit der Mittelwert aller ${n+1} Sprünge genau ${de(t)} dm beträgt? Runde auf zwei Nachkommastellen.`,ans:r2(need,2),tol:0.011,unit:'dm',show:de(need,2),
+   ex:`Benötigte Summe: ${de(t)} · ${n+1} = ${de(t*(n+1),2)}. Bisher: ${de(s,2)}. Fehlt: ${de(t*(n+1),2)} − ${de(s,2)} ≈ ${de(need,2)} dm.`,f:'Mittelwert rückwärts: Mittelwert · Anzahl = Summe.'});});
+gen('e_sachTR','E',2,'2',()=>{const k=ri(0,2);
+  if(k===0){const l=ri(40,90)/10,km=ri(150,900),pr=ri(160,199)/100,c=km/100*l*pr;return NUM({q:`Ein Auto verbraucht ${de(l)} l auf 100 km. Der Liter kostet ${eur(pr)}. Was kostet eine Fahrt von ${km} km? Runde auf Cent.`,ans:r2(c,2),tol:0.011,unit:'€',show:deFix(c,2),
+   ex:`Verbrauch: ${km} : 100 · ${de(l)} = ${de(km/100*l,3)} l. Kosten: ${de(km/100*l,3)} · ${deFix(pr,2)} ≈ ${eur(c)}.`,f:'Erst die Liter ausrechnen, dann mit dem Literpreis malnehmen.'});}
+  if(k===1){const v=ri(30,180)/10,kmh=v*3.6;return NUM({q:`Ein Radfahrer fährt ${de(v)} m/s. Wie schnell ist das in km/h? Runde auf eine Nachkommastelle.`,ans:r2(kmh,1),tol:0.051,unit:'km/h',show:de(kmh,1),
+   ex:`m/s · 3,6 = km/h: ${de(v)} · 3,6 = ${de(kmh,2)} km/h.`,f:'1 m/s = 3,6 km/h, weil eine Stunde 3600 s und ein Kilometer 1000 m hat.'});}
+  const a=ri(25,80)/10,b=ri(25,60)/10,pr=ri(25,70)+0.99,c=a*b*pr;return NUM({q:`Ein Zimmer ist ${de(a)} m lang und ${de(b)} m breit. Laminat kostet ${eur(pr)} pro m². Was kostet das Laminat für den ganzen Boden? Runde auf Cent.`,ans:r2(c,2),tol:0.011,unit:'€',show:deFix(c,2),
+   ex:`Fläche: ${de(a)} · ${de(b)} = ${de(a*b,4)} m². Kosten: ${de(a*b,4)} · ${deFix(pr,2)} ≈ ${eur(c)}.`,f:'Erst die Fläche, dann den Preis pro m² malnehmen.'});});
+gen('e_zeitTR','E',2,'2',()=>{const s=ri(42,180)/10,v=ri(8,25),t=s/v,h=Math.floor(t),mi=Math.round((t-h)*60);const tot=h*60+mi;
+  return NUM({q:`Eine Radtour ist ${de(s)} km lang. Lina fährt durchschnittlich ${v} km/h. Wie viele Minuten ist sie unterwegs? Runde auf Ganze.`,ans:tot,tol:1.01,unit:'min',show:de(tot),
+  ex:`t = ${de(s)} : ${v} ≈ ${de(t,4)} h. Mal 60 ≈ ${tot} min${h?' (= '+h+' h '+mi+' min)':''}.`,f:'Dezimalstunden sind keine Minuten! 1,5 h = 1 h 30 min.'});});
+
 /* ====== Hand-written starting hints for the Tipp-Karte (never reveal the result) ====== */
 const HINTS={
  z_mul1:'Zerlege die größere Zahl in Zehner und Einer und rechne beide Teile einzeln.',z_mul2:'Rechne erst mal 10, dann den Rest, und addiere beides.',
@@ -1065,7 +1114,11 @@ const HINTS={
  s_box:'Erinnere dich an die Reihenfolge der fünf Kennwerte im Boxplot.',s_tab:'Rechne Note · Anzahl für jede Spalte, addiere und teile durch die Gesamtanzahl.',s_sortbox:'Der Median liegt genau in der Mitte.',
  e_units:'Große Einheit → kleine Einheit: malnehmen. Kleine → große: teilen.',e_units2:'Flächen: Umrechnungszahl 100. Volumen: 1000. 1 dm³ = 1 l.',
  e_dreisatz:'Rechne zuerst aus, was ein Stück kostet.',e_anti:'Mehr Helfer → weniger Zeit. Rechne zuerst die Gesamtarbeit aus.',
- e_speed:'Rechne die Minuten zuerst in Stunden um.',e_massstab:'Nimm die Kartenlänge mit der Maßstabszahl mal und rechne die Einheit um.',e_sort:'Rechne alle Angaben in dieselbe Einheit um.'};
+ e_speed:'Rechne die Minuten zuerst in Stunden um.',e_massstab:'Nimm die Kartenlänge mit der Maßstabszahl mal und rechne die Einheit um.',e_sort:'Rechne alle Angaben in dieselbe Einheit um.',
+ z_sciTR:'Gib die Zehnerpotenz mit der Taste ×10ˣ (EXP) ein und überlege: malnehmen oder teilen?',z_wurzTR:'Schätze zuerst, dann rechne mit dem Taschenrechner. Klammern mit eingeben!',
+ t_formTR:'Stelle die Formel zuerst nach der gesuchten Größe um, dann setze ein.',l_sachTR:'Stelle eine Funktion f(x) = Startwert − Verbrauch · x auf.',
+ q_nullTR:'Bringe die Gleichung in die Normalform x² + px + q = 0 und nutze die p-q-Formel.',w_baumTR:'Pfadregel: Wahrscheinlichkeiten entlang des Pfades malnehmen. Bei „mindestens“ das Gegenereignis nutzen.',
+ s_mittelTR:'Mittelwert = Summe : Anzahl. Rückwärts: Mittelwert · Anzahl = Summe.',e_sachTR:'Zerlege die Aufgabe in zwei Schritte: erst die Menge, dann den Preis.',e_zeitTR:'Zeit = Strecke : Geschwindigkeit. Dann Stunden in Minuten umrechnen.'};
 </script>
 <script>
 (function(){
@@ -1163,32 +1216,43 @@ function show(v){['vStart','vQuiz','vRes'].forEach(x=>$(x).hidden=(x!==v));$('hu
 function toast(t){const e=$('toast');e.innerHTML=fmt(t);e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2400);}
 
 /* ---------------- Aufgaben auswählen ---------------- */
+const ONCE=['z_sortfix','t_sortpq','s_sortbox','k_sortfix'];
+GEN.forEach(g=>{if(ONCE.indexOf(g.id)>=0)g.once=true;});
+function selFilter(q){return S.topics.indexOf(q.t)>=0&&(!S.diff||q.d===S.diff)&&(S.part==='b'||q.p===S.part);}
+function pools(){const used=new Set(S.list.map(q=>q.id));
+  const st=ALL.filter(q=>selFilter(q)&&P.seen.indexOf(q.id)<0&&!used.has(q.id));
+  const gn=GEN.filter(g=>selFilter(g)&&(!g.once||(P.seen.indexOf('g:'+g.id)<0&&!used.has('g:'+g.id))));
+  return {st:st,gn:gn};}
+/* Feste Aufgaben kommen nur einmal dran. Erst wenn alle festen Aufgaben der Auswahl erledigt sind, beginnen sie beim nächsten Rundenstart von vorn. */
+function recycleIfDone(){const sel=ALL.filter(selFilter).map(q=>q.id).concat(GEN.filter(g=>selFilter(g)&&g.once).map(g=>'g:'+g.id));
+  if(sel.length&&sel.every(id=>P.seen.indexOf(id)>=0)){const ids=new Set(sel);P.seen=P.seen.filter(id=>!ids.has(id));store();return true;}return false;}
 function nextQuestion(){
-  const f=q=>S.topics.indexOf(q.t)>=0&&(!S.diff||q.d===S.diff)&&(S.part==='b'||q.p===S.part);
-  let st=ALL.filter(f),gn=GEN.filter(f);
+  let {st,gn}=pools();
+  if(!st.length&&!gn.length){const sel=new Set(ALL.filter(selFilter).map(q=>q.id).concat(GEN.filter(g=>selFilter(g)&&g.once).map(g=>'g:'+g.id)));P.seen=P.seen.filter(id=>!sel.has(id));store();
+    ({st,gn}=pools());if(!st.length&&!gn.length)st=ALL.filter(selFilter);
+    toast('🎉 Du hast alle Aufgaben dieser Auswahl geschafft! Wähle für mehr Abwechslung weitere Themen.');}
   if(S.part==='b'){const c=k=>S.byP[k]?S.byP[k].n:0;const want=c('1')===c('2')?(Math.random()<.5?'1':'2'):(c('1')<c('2')?'1':'2');
-    const st2=st.filter(q=>q.p===want),gn2=gn.filter(q=>q.p===want);if(st2.length+gn2.length){st=st2;gn=gn2;}}const usedNow=new Set(S.list.map(q=>q.id));
-  let fresh=st.filter(q=>P.seen.indexOf(q.id)<0&&!usedNow.has(q.id));
-  if(!fresh.length&&st.length){const ids=new Set(st.map(q=>q.id));P.seen=P.seen.filter(id=>!ids.has(id));store();fresh=st.filter(q=>!usedNow.has(q.id));
-    if(S.n>0)toast('🎉 Du hast alle festen Aufgaben dieser Auswahl gesehen! Sie kommen jetzt wieder dran.');if(!fresh.length)fresh=st;}
+    const st2=st.filter(q=>q.p===want),gn2=gn.filter(q=>q.p===want);if(st2.length+gn2.length){st=st2;gn=gn2;}}
   const target=S.diff||Math.max(1,Math.min(3,Math.round(S.lv+(Math.random()<.3?(Math.random()<.5?-1:1):0))));
-  const tset=[...new Set(fresh.map(q=>q.t).concat(gn.map(g=>g.t)))];
+  const tset=[...new Set(st.map(q=>q.t).concat(gn.map(g=>g.t)))];
   let cands=tset.filter(t=>t!==S.lastT);if(!cands.length)cands=tset;
   const minC=Math.min(...cands.map(t=>S.byT[t]?S.byT[t].n:0));cands=cands.filter(t=>(S.byT[t]?S.byT[t].n:0)===minC);
   const t=pick(cands);
   const lvl=(arr)=>{let c=arr.filter(q=>q.t===t&&q.d===target);if(!c.length)c=arr.filter(q=>q.t===t&&Math.abs(q.d-target)===1);if(!c.length)c=arr.filter(q=>q.t===t);return c;};
-  const sc=lvl(fresh);let gc=lvl(gn);if(gc.length>1)gc=gc.filter(g=>g.id!==S.lastG);
+  const sc=lvl(st);let gc=lvl(gn);
+  const rec=S.recG||[];const gc2=gc.filter(g=>rec.indexOf(g.id)<0);if(gc2.length)gc=gc2;
   const useGen=gc.length&&(!sc.length||Math.random()<0.55);
   if(useGen){for(let i=0;i<6;i++){const q=makeGen(pick(gc));if(q)return q;}}
   if(sc.length)return Object.assign({},pick(sc));
-  for(let i=0;i<10;i++){const q=makeGen(pick(gn));if(q)return q;}
-  return Object.assign({},pick(st));}
+  for(let i=0;i<10;i++){const q=makeGen(pick(gn.length?gn:GEN.filter(g=>!g.once)));if(q)return q;}
+  return makeGen(GEN[0]);}
 
 function startRound(keep){
   S.name=$('inName').value.trim();S.kl=$('inKl').value.trim();
   P.name=S.name;P.kl=S.kl;P.size=selSize;P.diff=selDiff;P.part=selPart;P.topics=selTopics.slice();store();
   S.size=selSize;S.diff=selDiff;S.part=selPart;S.topics=selTopics.slice();
   if(!keep)Object.assign(S,{list:[],n:0,ok:0,pts:0,streak:0,best:0,lv:1.4,lastT:'',lastG:'',byT:{},byP:{},facts:[],badges:[]});
+  if(recycleIfDone()&&P.life.n)setTimeout(()=>toast('🎉 Du hast alle festen Aufgaben dieser Auswahl geschafft! Sie kommen jetzt wieder dran.'),300);
   S.roundStart=S.n;S.joker=S.size?Math.max(1,Math.round(S.size/10)):3;S.tips=S.size?Math.max(2,Math.round(S.size/10)*2):5;
   $('who').textContent=S.name+' · Klasse '+S.kl;show('vQuiz');ask();}
 $('bStart').onclick=()=>startRound(false);
@@ -1200,7 +1264,7 @@ function tabHtml(t){return '<table><tr>'+t[0].map(c=>'<th>'+fmt(c)+'</th>').join
 
 /* ---------------- Aufgabe anzeigen ---------------- */
 function ask(){
-  const q=nextQuestion();S.cur=q;S.ans=false;S.list.push(q);S.lastT=q.t;if(q.gid)S.lastG=q.gid;
+  const q=nextQuestion();S.cur=q;S.ans=false;S.list.push(q);S.lastT=q.t;if(q.gid){S.lastG=q.gid;S.recG=(S.recG||[]).concat(q.gid).slice(-8);}
   const inRound=S.n-S.roundStart+1,pt=PART[q.p];
   $('qTag').innerHTML=TOPICS[q.t][1]+' '+esc(TOPICS[q.t][0]);
   const pe=$('qPart');pe.className='tag '+pt[2];pe.textContent=pt[1]+' '+pt[0];
@@ -1335,7 +1399,7 @@ function answer(right,info){
     `<div class="box why"><div class="lbl">So rechnest du</div><p>${fmt(q.ex)}</p></div>`+
     `<div class="box fact"><div class="lbl">ZP-Tipp</div><p>${fmt(q.f)}</p></div></div>`;
   S.facts.push({t:q.t,q:q.q,a:solText(q),f:q.f,ok:right});
-  if(!q.gid&&P.seen.indexOf(q.id)<0)P.seen.push(q.id);P.life.n++;if(right)P.life.ok++;store();
+  if((!q.gid||GEN.some(g=>g.id===q.gid&&g.once))&&P.seen.indexOf(q.id)<0)P.seen.push(q.id);P.life.n++;if(right)P.life.ok++;store();
   const inRound=S.n-S.roundStart,last=S.size&&inRound>=S.size;
   $('bNext').textContent=last?'Zum Ergebnis 🏁':'Nächste Aufgabe →';$('bNext').hidden=false;
   try{$('bNext').focus({preventScroll:true});}catch(e){}
