@@ -92,7 +92,7 @@ table{border-collapse:collapse;width:100%}
 
 <script>
 (function(){
-const PIN="3815", KEY="waldi-wwc-a2-v2", T1=10*60, T2=15*60;
+const PIN="3815", KEY="waldi-wwc-a2-v3", T1=10*60, T2=15*60;
 const app=document.getElementById("app");
 let S=load()||{view:"start",a:{}};
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
@@ -119,41 +119,50 @@ function dsTable(h,rows,ops){
 }
 /* ---------- Aufgaben ---------- */
 const TASKS=[
- {n:1,title:"Hefte",
-  body:()=>`<p>2 Hefte kosten 6 €. Wie viel kosten 8 Hefte? Ergänze die Tabelle und schreibe einen Antwortsatz.</p>
-   ${dsTable(["Anzahl Hefte","Preis (in €)"],[["2","6"],["8",{id:"1p"}]],[{sym:"",id:"1o"}])}
-   <div><label for="1s">Antwortsatz</label>${txt("1s","")}</div>`,
-  grade:a=>({ok:eq(a["1p"],24),sent:sentenceOk(a["1s"],24)}),
-  result:a=>[["Preis für 8 Hefte",a["1p"]||"–","24 €"],["Rechenzeichen",a["1ol"]||"–","· 4"],["Antwortsatz",a["1s"]||"–","8 Hefte kosten 24 €."]],
-  explain:"8 ist das Vierfache von 2. Darum kostet es auch das Vierfache: 6 € · 4 = 24 €."},
- {n:2,title:"Muffins",
+ {n:1,title:"Muffins",
   body:()=>`<p>4 Muffins kosten 12 €. Wie viel kosten 7 Muffins? Ergänze die Tabelle und schreibe einen Antwortsatz.</p>
-   ${dsTable(["Anzahl Muffins","Preis (in €)"],[["4","12"],["1",{id:"2p1"}],["7",{id:"2p7"}]],[{sym:":",id:"2o1"},{sym:"·",id:"2o2"}])}
-   <div><label for="2s">Antwortsatz</label>${txt("2s","")}</div>`,
-  grade:a=>({ok:eq(a["2p1"],3)&&eq(a["2p7"],21),sent:sentenceOk(a["2s"],21)}),
-  result:a=>[["Preis für 1 Muffin",a["2p1"]||"–","3 €"],["Preis für 7 Muffins",a["2p7"]||"–","21 €"],["Rechenzeichen",`: ${a["2o1l"]||"_"} und · ${a["2o2l"]||"_"}`,": 4 und · 7"],["Antwortsatz",a["2s"]||"–","7 Muffins kosten 21 €."]],
+   ${dsTable(["Anzahl Muffins","Preis (in €)"],[["4","12"],["1",{id:"1p1"}],["7",{id:"1p7"}]],[{sym:":",id:"1o1"},{sym:"·",id:"1o2"}])}
+   <div><label for="1s">Antwortsatz</label>${txt("1s","")}</div>`,
+  grade:a=>({ok:eq(a["1p1"],3)&&eq(a["1p7"],21),sent:sentenceOk(a["1s"],21)}),
+  result:a=>[["Preis für 1 Muffin",a["1p1"]||"–","3 €"],["Preis für 7 Muffins",a["1p7"]||"–","21 €"],["Rechenzeichen",`: ${a["1o1l"]||"_"} und · ${a["1o2l"]||"_"}`,": 4 und · 7"],["Antwortsatz",a["1s"]||"–","7 Muffins kosten 21 €."]],
   explain:"Erst auf 1 zurückrechnen: 12 € : 4 = 3 €. Dann hochrechnen: 3 € · 7 = 21 €. Links und rechts wird immer dasselbe gerechnet."},
- {n:3,title:"Fahrrad",
+ {n:2,title:"Fahrrad",
   body:()=>`<p>Emir fährt mit dem Fahrrad immer gleich schnell. In 3 Stunden schafft er 45 km. Wie weit kommt er in 5 Stunden? Ergänze die Tabelle und schreibe einen Antwortsatz.</p>
-   ${dsTable(["Zeit (in h)","Strecke (in km)"],[["3","45"],["1",{id:"3k1"}],["5",{id:"3k5"}]],[{sym:":",id:"3o1"},{sym:"·",id:"3o2"}])}
-   <div><label for="3s">Antwortsatz</label>${txt("3s","")}</div>`,
-  grade:a=>({ok:eq(a["3k1"],15)&&eq(a["3k5"],75),sent:sentenceOk(a["3s"],75)}),
-  result:a=>[["Strecke in 1 Stunde",a["3k1"]||"–","15 km"],["Strecke in 5 Stunden",a["3k5"]||"–","75 km"],["Rechenzeichen",`: ${a["3o1l"]||"_"} und · ${a["3o2l"]||"_"}`,": 3 und · 5"],["Antwortsatz",a["3s"]||"–","In 5 Stunden kommt Emir 75 km weit."]],
+   ${dsTable(["Zeit (in h)","Strecke (in km)"],[["3","45"],["1",{id:"2k1"}],["5",{id:"2k5"}]],[{sym:":",id:"2o1"},{sym:"·",id:"2o2"}])}
+   <div><label for="2s">Antwortsatz</label>${txt("2s","")}</div>`,
+  grade:a=>({ok:eq(a["2k1"],15)&&eq(a["2k5"],75),sent:sentenceOk(a["2s"],75)}),
+  result:a=>[["Strecke in 1 Stunde",a["2k1"]||"–","15 km"],["Strecke in 5 Stunden",a["2k5"]||"–","75 km"],["Rechenzeichen",`: ${a["2o1l"]||"_"} und · ${a["2o2l"]||"_"}`,": 3 und · 5"],["Antwortsatz",a["2s"]||"–","In 5 Stunden kommt Emir 75 km weit."]],
   explain:"Erst auf 1 Stunde zurückrechnen: 45 km : 3 = 15 km. Dann hochrechnen: 15 km · 5 = 75 km."},
- {n:4,title:"Kartoffeln",
-  body:()=>`<p>4 kg Kartoffeln kosten 3,60 €. Wie viel kosten 6 kg Kartoffeln? Rechne mit dem Dreisatz in deinem Heft und schreibe einen Antwortsatz.</p>
-   <div><label for="4p">6 kg Kartoffeln kosten (in €)</label>${inp("4p","Ergebnis",'160px')}</div>
-   <div><label for="4s">Antwortsatz</label>${txt("4s","")}</div>`,
-  grade:a=>({ok:eq(a["4p"],5.4),sent:sentenceOk(a["4s"],5.4)}),
-  result:a=>[["Preis für 6 kg",a["4p"]||"–","5,40 €"],["Antwortsatz",a["4s"]||"–","6 kg Kartoffeln kosten 5,40 €."]],
-  explain:"Erst auf 1 kg zurückrechnen: 3,60 € : 4 = 0,90 €. Dann hochrechnen: 0,90 € · 6 = 5,40 €."},
- {n:5,title:"Saft",
-  body:()=>`<p>5 Flaschen Saft kosten 7,50 €. Wie viel kosten 8 Flaschen Saft? Rechne mit dem Dreisatz in der Tabelle und schreibe einen Antwortsatz.</p>
-   ${dsTable(["Anzahl Flaschen","Preis (in €)"],[[{id:"5a0"},{id:"5b0"}],[{id:"5a1"},{id:"5b1"}],[{id:"5a2"},{id:"5b2"}]],[null,null])}
+ {n:3,title:"Saft",
+  body:()=>`<p>5 Flaschen Saft kosten 7,50 €. Wie viel kosten 8 Flaschen Saft?</p>
+   ${dsTable(["Anzahl Flaschen","Preis (in €)"],[[{id:"3a0"},{id:"3b0"}],[{id:"3a1"},{id:"3b1"}],[{id:"3a2"},{id:"3b2"}]],[null,null])}
+   <div><label for="3s">Antwortsatz</label>${txt("3s","")}</div>`,
+  grade:a=>({ok:eq(a["3a2"],8)&&eq(a["3b2"],12),sent:sentenceOk(a["3s"],12)}),
+  result:a=>[["1. Zeile",`${a["3a0"]||"_"} Flaschen → ${a["3b0"]||"_"} €`,"5 Flaschen → 7,50 €"],["2. Zeile",`${a["3a1"]||"_"} Flasche → ${a["3b1"]||"_"} €`,"1 Flasche → 1,50 €"],["3. Zeile",`${a["3a2"]||"_"} Flaschen → ${a["3b2"]||"_"} €`,"8 Flaschen → 12 €"],["Antwortsatz",a["3s"]||"–","8 Flaschen Saft kosten 12 €."]],
+  explain:"Erst auf 1 Flasche zurückrechnen: 7,50 € : 5 = 1,50 €. Dann hochrechnen: 1,50 € · 8 = 12 €."},
+ {n:4,title:"Dreisatz – ja oder nein?",
+  body:()=>`<p><b>a)</b> 3 Hefte kosten 4,50 €. Wie viel kosten 10 Hefte? Darf man hier den Dreisatz benutzen? Begründe und rechne, falls ja.</p>
+   ${choice("4a")}
+   <div><label for="4aw">Begründung</label>${txt("4aw","Weil …")}</div>
+   <div><label for="4ap">10 Hefte kosten (in €)</label>${inp("4ap","Ergebnis",'160px')}</div>
+   <p><b>b)</b> Tom ist mit 10 Jahren 1,40 m groß. Ist er mit 20 Jahren 2,80 m groß? Begründe.</p>
+   ${choice("4b")}
+   <div><label for="4bw">Begründung</label>${txt("4bw","Weil …")}</div>`,
+  grade:a=>({ok:a["4a"]==="ja"&&eq(a["4ap"],15)&&a["4b"]==="nein"}),
+  result:a=>[
+   ["a) Dreisatz?",a["4a"]?(a["4a"]==="ja"?"Ja":"Nein"):"–","Ja"],
+   ["a) 10 Hefte kosten",a["4ap"]?a["4ap"]+" €":"–","15,00 €"],
+   ["a) Deine Begründung",a["4aw"]||"–","Jedes Heft kostet gleich viel. Doppelt so viele Hefte kosten doppelt so viel. Die Zuordnung ist proportional."],
+   ["b) Dreisatz?",a["4b"]?(a["4b"]==="ja"?"Ja":"Nein"):"–","Nein"],
+   ["b) Deine Begründung",a["4bw"]||"–","Ein Mensch wächst nicht jedes Jahr gleich viel. 2,80 m ist nicht realistisch. Alter → Körpergröße ist nicht proportional."]],
+  explain:"Rechnung zu a): 3 Hefte = 4,50 €. Geteilt durch 3: 1 Heft = 1,50 €. Mal 10: 10 Hefte = 15,00 €."},
+ {n:5,title:"Kartoffeln",
+  body:()=>`<p>4 kg Kartoffeln kosten 3,60 €. Tim hat 6,30 €. Wie viel kg Kartoffeln kann er kaufen? Rechne mit dem Dreisatz in deinem Heft.</p>
+   <div><label for="5k">Tim kann so viele kg kaufen</label>${inp("5k","Ergebnis",'160px')}</div>
    <div><label for="5s">Antwortsatz</label>${txt("5s","")}</div>`,
-  grade:a=>({ok:eq(a["5a2"],8)&&eq(a["5b2"],12),sent:sentenceOk(a["5s"],12)}),
-  result:a=>[["1. Zeile",`${a["5a0"]||"_"} Flaschen → ${a["5b0"]||"_"} €`,"5 Flaschen → 7,50 €"],["2. Zeile",`${a["5a1"]||"_"} Flasche → ${a["5b1"]||"_"} €`,"1 Flasche → 1,50 €"],["3. Zeile",`${a["5a2"]||"_"} Flaschen → ${a["5b2"]||"_"} €`,"8 Flaschen → 12 €"],["Antwortsatz",a["5s"]||"–","8 Flaschen Saft kosten 12 €."]],
-  explain:"Erst auf 1 Flasche zurückrechnen: 7,50 € : 5 = 1,50 €. Dann hochrechnen: 1,50 € · 8 = 12 €."}
+  grade:a=>({ok:eq(a["5k"],7),sent:sentenceOk(a["5s"],7)}),
+  result:a=>[["So viele kg",a["5k"]||"–","7 kg"],["Antwortsatz",a["5s"]||"–","Tim kann 7 kg Kartoffeln kaufen."]],
+  explain:"Preis für 1 kg: 3,60 € : 4 = 0,90 €. Dann fragen: Wie oft passt 0,90 € in 6,30 €? 6,30 € : 0,90 € = 7. Also 7 kg."}
 ];
 
 /* ---------- Zeit ---------- */
@@ -222,7 +231,7 @@ ${S.pinMsg?`<div class="fb bad" role="status">${S.pinMsg}</div>`:""}
 
 /* ---------- Abgabe ---------- */
 function emptyCount(){const ids=[...document.querySelectorAll("[data-k]")].filter(e=>!e.classList.contains("ch")&&!/o\d?[lr]?$/.test(e.dataset.k)).map(e=>e.dataset.k);
-  const u=[...new Set(ids)];let n=u.filter(k=>!String(S.a[k]??"").trim()).length; return n}
+  const u=[...new Set(ids)];let n=u.filter(k=>!String(S.a[k]??"").trim()).length; if(!S.a["4a"])n++; if(!S.a["4b"])n++; return n}
 function submit(auto){
   S.res=TASKS.map(t=>t.grade(S.a)); S.used=Math.min(elapsed(),T2); S.auto=!!auto; S.view="result"; S.confirm=0; save(); render(); window.scrollTo(0,0);
 }
