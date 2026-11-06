@@ -134,7 +134,7 @@
     { jahrgang: "Jahrgang 7", thema: "Modul 7.1", nr: 1, titel: "Modul 7.1", info: "", datei: "" },
     { jahrgang: "Jahrgang 7", thema: "Modul 7.2", nr: 1, titel: "7.2 Proportionale und antiproportionale Zuordnung", info: "Fit für die Klassenarbeit: Stationen, Textaufgaben, Experten und Merkzettel", datei: "Jahrgang%2007/Modul%207.2/7.2%20Proportionale%20und%20antiproportionale%20Zuordnung.html" },
     { jahrgang: "Jahrgang 7", thema: "Modul 7.2", nr: 2, titel: "Dreisatz bei proportionalen Zuordnungen", info: "Waldis Klassenfahrt: Textaufgaben in vier Etappen", datei: "Jahrgang%2007/Modul%207.2/Dreisatz%20bei%20proportionalen%20Zuordnungen/Dreisatz%20bei%20proportionalen%20Zuordnungen.html" },
-    { jahrgang: "Jahrgang 7", thema: "Modul 7.2", nr: 3, titel: "Waldis Wissens-Check 7.2 A2", info: "Dreisatz-Test: 5 Aufgaben in 10 Minuten, bestanden ab 4 richtigen", datei: "Jahrgang%2007/Modul%207.2/Wissens-Check%207.2/Waldis%20Wissens-Check%207.2%20A2.html" },
+    { jahrgang: "Jahrgang 7", thema: "Modul 7.2", ordner: "Wissens-Check 7.2", nr: 1, titel: "Waldis Wissens-Check 7.2 A2", info: "Dreisatz-Test: 5 Aufgaben in 10 Minuten, bestanden ab 4 richtigen", datei: "Jahrgang%2007/Modul%207.2/Wissens-Check%207.2/Waldis%20Wissens-Check%207.2%20A2.html" },
     { jahrgang: "Jahrgang 7", thema: "Modul 7.3", nr: 1, titel: "Modul 7.3", info: "", datei: "" },
     { jahrgang: "Jahrgang 7", thema: "Modul 7.4", nr: 1, titel: "Modul 7.4", info: "", datei: "" },
     { jahrgang: "Jahrgang 7", thema: "Modul 7.5", nr: 1, titel: "Modul 7.5", info: "", datei: "" },
@@ -243,7 +243,28 @@
     if (jg) zurueckLink(jg, hashFuer({ j: jg }));
     else zurueckLink("Übersicht", "#");
     ueberschrift(thema);
-    apps.filter(a => (a.jahrgang || null) === (jg || null) && a.thema === thema).forEach(app => {
+    const themaApps = apps.filter(a => (a.jahrgang || null) === (jg || null) && a.thema === thema);
+    themaApps.filter(a => !a.ordner).forEach(app => {
+      const offen = istOffen(app);
+      liste.appendChild(kachel(app.nr, app.titel, offen ? (app.info || "") : "folgt bald", app.datei, offen));
+    });
+    // Ordner (Eintrag mit "ordner") stehen hinter den einzelnen Apps
+    let nr = themaApps.filter(a => !a.ordner).length + 1;
+    [...new Set(themaApps.filter(a => a.ordner).map(a => a.ordner))].forEach(ordner => {
+      const offen = themaApps.filter(a => a.ordner === ordner && istOffen(a)).length;
+      const ziel = jg ? { j: jg, t: thema, o: ordner } : { t: thema, o: ordner };
+      liste.appendChild(kachel(nr++, ordner, offen ? anzahl(offen, "App", "Apps") : "folgt bald",
+        hashFuer(ziel), offen > 0));
+    });
+  }
+
+  // Ebene 4: Apps in einem Ordner innerhalb eines Themas
+  function zeigeOrdner(jg, thema, ordner) {
+    liste.innerHTML = "";
+    sub.textContent = "Wähle eine App.";
+    zurueckLink(thema, hashFuer(jg ? { j: jg, t: thema } : { t: thema }));
+    ueberschrift(ordner);
+    apps.filter(a => (a.jahrgang || null) === (jg || null) && a.thema === thema && a.ordner === ordner).forEach(app => {
       const offen = istOffen(app);
       liste.appendChild(kachel(app.nr, app.titel, offen ? (app.info || "") : "folgt bald", app.datei, offen));
     });
@@ -256,7 +277,8 @@
       if (k > 0) p[x.slice(0, k)] = decodeURIComponent(x.slice(k + 1));
     });
     const jg = JAHRGAENGE.includes(p.j) ? p.j : null;
-    if (p.t && apps.some(a => (a.jahrgang || null) === jg && a.thema === p.t)) zeigeThema(jg, p.t);
+    if (p.t && p.o && apps.some(a => (a.jahrgang || null) === jg && a.thema === p.t && a.ordner === p.o)) zeigeOrdner(jg, p.t, p.o);
+    else if (p.t && apps.some(a => (a.jahrgang || null) === jg && a.thema === p.t)) zeigeThema(jg, p.t);
     else if (jg) zeigeJahrgang(jg);
     else zeigeUebersicht();
     window.scrollTo(0, 0);
