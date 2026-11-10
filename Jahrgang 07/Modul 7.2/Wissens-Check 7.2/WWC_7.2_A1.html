@@ -233,12 +233,13 @@ function resultView(){
    <h1 class="${pass?"pass":"fail"}">${pass?"Bestanden. Bravo!":"Noch nicht bestanden"}</h1>
    <p>${pass?"Super gemacht! Du kannst mit dem nächsten Teil weitermachen.":"Falls es diesmal nicht geklappt hat, übe noch ein bisschen und versuche es dann wieder."}</p>
    <p class="hint">Bearbeitungszeit: ${mins} min ${secs} s${S.extended?" (mit Verlängerung)":""}${S.auto?" · automatisch abgegeben":""}</p></div>
-   <div class="teacher">Zeig dieses Ergebnis jetzt deiner Lehrkraft!</div>`+
+   <div class="teacher">Zeig dieses Ergebnis jetzt deiner Lehrkraft!</div>${nextBox()}`+
   TASKS.map((t,i)=>{const r=R[i];const sent=r.ok||!(r.why&&r.why.length)?"":`<div class="fb bad"><div>Warum nicht richtig?</div><ul style="margin:4px 0 0;padding-left:1.2em;font-weight:600">${r.why.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></div>`;
    return `<div class="card"><div class="head"><span class="num">${t.n}</span><h2>${t.title}</h2><span class="tag ${r.ok?"ok":"bad"}" style="margin-left:auto">${r.ok?"richtig":"falsch"}</span></div>
    ${t.result(S.a).map(([lab,yours,sol])=>`<div><div class="meta">${lab}</div><div class="cmp"><div><div class="meta">Deine Antwort</div>${esc(yours)}</div><div><div class="meta">Richtig wäre</div><span class="sol">${sol}</span></div></div></div>`).join("")}
-   ${sent}<p><b>So geht’s:</b> ${t.explain}</p></div>`}).join("");
+   ${sent}<p><b>So geht’s:</b> ${t.explain}</p></div>`}).join("")+nextBox();
 }
+function nextBox(){return S.nextAsk?`<div class="card"><p><b>Hat deine Lehrkraft dein Ergebnis gesehen?</b> Danach ist dein Ergebnis auf diesem Gerät gelöscht.</p><div class="row"><button class="nx-yes">Ja, nächstes Kind starten</button><button class="ghost nx-no">Zurück zum Ergebnis</button></div></div>`:`<div class="row" style="justify-content:center"><button class="ghost nx">Fertig – nächstes Kind starten</button></div>`}
 
 function teacherView(){return bar()+`<div class="card"><h2>Bereich für die Lehrkraft</h2>
 <p>Hier wird der Test auf diesem Gerät zurückgesetzt, zum Beispiel für das nächste Kind oder einen neuen Versuch.</p>
@@ -266,6 +267,9 @@ function bind(){
   if($("nosure"))$("nosure").onclick=()=>{S.confirm=0;save();render()};
   if($("reset"))$("reset").onclick=()=>{if($("tp").value.trim()!==PIN){S.pinMsg="Die PIN stimmt nicht.";render();return}
     try{localStorage.removeItem(KEY)}catch(e){} S={view:"start",a:{}};render()};
+  document.querySelectorAll(".nx").forEach(b=>b.onclick=()=>{S.nextAsk=1;save();render();const y=document.querySelector(".nx-yes");if(y)y.scrollIntoView({block:"center"})});
+  document.querySelectorAll(".nx-no").forEach(b=>b.onclick=()=>{S.nextAsk=0;save();render()});
+  document.querySelectorAll(".nx-yes").forEach(b=>b.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){} S={view:"start",a:{}};render();window.scrollTo(0,0)});
   if($("back"))$("back").onclick=()=>{S.view=S.back||"start";S.pinMsg="";save();render()};
 }
 render();
