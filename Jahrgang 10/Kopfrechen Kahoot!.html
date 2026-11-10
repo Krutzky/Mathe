@@ -1,4 +1,4 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kopfrechen-Jagd ZP10</title>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kopfrechen Kahoot!</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lexend:wght@500;700&display=swap" rel="stylesheet"><style>
 
 /* Karoheft-Look: Tinte, Textmarker, Kästchenpapier. Karten liegen wie Zettel auf dem Heft. */
@@ -209,7 +209,6 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
 .tag.lvl{background:var(--surface-2);color:var(--ink-soft)}
 .pill.timer{min-width:74px;justify-content:center}
 .qtext.big{font-size:38px;letter-spacing:.5px;text-align:center;margin:14px 0 18px}
-.numbox input{font-size:24px;text-align:center}
 .chain{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 4px;margin:4px 0 16px}
 .chain .node{min-width:52px;height:52px;padding:0 8px;border-radius:999px;display:grid;place-items:center;background:var(--surface-2);border:2px solid var(--line);font-family:var(--f-display);font-weight:700;font-size:20px;color:var(--ink-soft);animation:pop .4s ease both;animation-delay:calc(var(--i,0) * .18s + .1s)}
 .chain .node.start{background:var(--blue);border-color:var(--blue);color:#fff;animation-delay:0s}
@@ -239,9 +238,43 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
 .stat4 .stat b{font-size:22px}
 @media (min-width:640px){.stat4{grid-template-columns:repeat(4,1fr)}}
 @media (prefers-reduced-motion: reduce){.chain .node,.chain .arrow,.wrow{animation:none}}
+
+/* Antwortfeld mit eigener Zahlentastatur */
+.ans{display:grid;gap:10px;max-width:420px;margin:0 auto}
+.anshead{display:flex;align-items:center;gap:10px}
+.disp{flex:1;min-width:0;min-height:64px;border:2px solid var(--blue);border-radius:14px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 12px;font-family:var(--f-display);font-weight:700;font-size:28px;font-variant-numeric:tabular-nums;cursor:text}
+.disp .ph{color:var(--ink-soft);font-weight:500;font-size:20px}
+.disp .cur{display:inline-block;width:2px;height:1.05em;background:var(--blue);margin-left:1px;animation:blink 1s steps(1) infinite;vertical-align:middle}
+.disp .sg{font-size:30px}
+.disp .fbox{display:inline-flex;flex-direction:column;align-items:center;gap:3px}
+.disp .fpart{min-width:56px;min-height:38px;padding:0 8px;border-radius:8px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}
+.disp .fpart.on{border:2px solid var(--blue);background:var(--surface)}
+.disp .fbar{align-self:stretch;height:3px;border-radius:2px;background:var(--ink)}
+.anshint{font-size:14px;margin:0}
+.ans.ok .disp{border-color:var(--ok);background:var(--ok-soft)}
+.ans.bad .disp{border-color:var(--warm);background:var(--warm-soft)}
+.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pad button{min-height:52px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--f-display);font-weight:700;font-size:22px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .06s,background .15s}
+.pad button:active{transform:scale(.95);background:var(--blue-soft)}
+.pad button.fn{background:var(--surface-2);font-size:19px}
+.pad button[data-k="frac"],.pad button[data-k="swap"]{font-size:15px}
+.pad button.hl{border:2px solid var(--blue);background:var(--blue-soft);color:var(--blue)}
+.pad button:disabled{opacity:.35}
+.fic{display:inline-flex;flex-direction:column;gap:3px;vertical-align:middle;margin-right:4px}
+.fic i{display:block;width:10px;height:7px;border:2px solid currentColor;border-radius:2px}
+.fic i:first-child{border-bottom-width:0;border-radius:2px 2px 0 0;position:relative}
+.fic i:first-child::after{content:"";position:absolute;left:-4px;right:-4px;bottom:-3px;height:2px;background:currentColor}
+.fic i:last-child{border-top-width:0;border-radius:0 0 2px 2px}
+.btn.go{width:100%;font-size:19px;padding:14px}
+@keyframes blink{50%{opacity:0}}
+.scratch{margin-top:12px;border:2px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.scrhead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 6px 6px 12px;background:var(--surface-2);font-size:14px;font-weight:700;color:var(--ink-soft)}
+.scrhead .btn{padding:6px 12px;font-size:14px}
+#padCv{display:block;width:100%;height:230px;touch-action:none;cursor:crosshair;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+@media (prefers-reduced-motion: reduce){.disp .cur{animation:none}}
 </style></head><body>
 <header><div class="hwrap">
-  <div class="brand"><span class="top">Kopfrechnen · Fit für Teil 1 der ZP10</span><b>Kopfrechen-<em>Jagd</em></b><span id="who">Ohne Taschenrechner · Ohne Raten</span></div>
+  <div class="brand"><span class="top">Kopfrechnen · Fit für Teil 1 der ZP10</span><b>Kopfrechen <em>Kahoot!</em></b><span id="who">Ohne Taschenrechner · Ohne Raten</span></div>
   <div class="hud" id="hud" hidden>
     <span class="pill" title="Punkte">⭐ <span id="hPts">0</span></span>
     <span class="pill" id="hStreak" title="Richtige Antworten hintereinander">🔥 <span id="hStr">0</span></span>
@@ -255,7 +288,8 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
       <h1>Von 7 · 8 bis (−3)² – alles im Kopf</h1>
       <p class="muted">Einmaleins, Minuszeichen, Brüche, Prozente, Einsetzen, Gleichungen und vieles mehr. In <b id="nT">17</b> Themen mit je drei Stufen würfeln sich die Aufgaben jedes Mal neu. Taschenrechner bleibt in der Tasche – Zettel und Stift sind erlaubt.</p>
       <ul class="rules">
-        <li><b>Jede Antwort wird eingetippt.</b> Hier gibt es nichts zum Ankreuzen – Raten bringt dich nicht weiter.</li>
+        <li><b>Jede Antwort wird eingetippt</b> – mit der Zahlentastatur auf dem Bildschirm oder deiner Tastatur. Für Brüche gibt es eine eigene Bruch-Taste. Hier gibt es nichts zum Ankreuzen, Raten bringt dich nicht weiter.</li>
+        <li><b>Schmierzettel:</b> Zwischenergebnisse kannst du direkt in der App notieren.</li>
         <li><b>Falsch? Dann kommt eine neue, ähnliche Aufgabe.</b> Gezählt wird nur, was du richtig löst.</li>
         <li><b>Höchstens 3 Tipp-Karten pro Durchgang.</b> Mit Tipp gibt es halbe Punkte.</li>
         <li><b>Wer schnell rät, muss kurz pausieren.</b> Erst rechnen, dann tippen!</li>
@@ -288,11 +322,28 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
       <div class="qhead"><span class="tag" id="qTag"></span><span class="tag lvl" id="qLvl"></span><span class="tag retry" id="qRetry" hidden>🔁 Neue Chance</span><span class="qnum" id="qNum"></span></div>
       <div class="qtext" id="qText" tabindex="-1"></div>
       <div class="fig" id="qFig" hidden></div>
-      <div class="numrow" id="numRow"><div class="numbox"><input id="numIn" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="Ergebnis" aria-label="Dein Ergebnis"><span class="unit" id="qUnit"></span></div><button type="button" class="pm" id="numPm" title="Vorzeichen wechseln">±</button><button type="button" class="btn pri" id="numGo">Prüfen</button></div>
-      <p class="muted" id="fracNote" style="font-size:14px;margin:6px 0 0" hidden>Brüche gibst du mit Schrägstrich ein, z. B. 3/4. Kürzen ist nicht nötig.</p>
+      <div class="ans" id="ansArea">
+        <div class="anshead">
+          <div class="disp" id="disp" role="textbox" aria-live="polite" aria-label="Dein Ergebnis"></div>
+          <span class="unit" id="qUnit"></span>
+        </div>
+        <p class="muted anshint" id="fracNote" hidden>Hier ist ein Bruch gefragt: Tippe den Zähler, dann <b>▼ Nenner</b> und den Nenner. Kürzen ist nicht nötig.</p>
+        <div class="pad" id="pad" aria-label="Zahlentastatur">
+          <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="back" class="fn" aria-label="Löschen">⌫</button>
+          <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="sign" class="fn" aria-label="Minuszeichen setzen oder entfernen">−</button>
+          <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="," class="fn" aria-label="Komma">,</button>
+          <button type="button" data-k="frac" class="fn frac" id="kFrac" aria-label="Bruchstrich"><span class="fic"><i></i><i></i></span> Bruch</button><button type="button" data-k="0">0</button><button type="button" data-k="swap" class="fn" id="kSwap" aria-label="Zwischen Zähler und Nenner wechseln">▼ Nenner</button><button type="button" data-k="clear" class="fn" aria-label="Alles löschen">C</button>
+        </div>
+        <button type="button" class="btn pri go" id="numGo">Prüfen ✓</button>
+      </div>
       <div class="tools" id="qTools">
         <button class="btn tipbtn" type="button" id="bTip">💡 Tipp-Karte (<span id="tLeft">3</span>)</button>
+        <button class="btn sec" type="button" id="bPad">📝 Schmierzettel</button>
         <button class="btn ghost" type="button" id="bIdk">🤔 Weiß ich nicht – zeig’s mir</button>
+      </div>
+      <div class="scratch" id="scratch" hidden>
+        <div class="scrhead"><span>📝 Schmierzettel – schreib dir Zwischenergebnisse auf</span><button type="button" class="btn ghost" id="bPadClear">Leeren</button></div>
+        <canvas id="padCv" aria-label="Schmierzettel zum Zeichnen mit Finger oder Maus"></canvas>
       </div>
       <div class="tipcard" id="tipCard" hidden></div>
       <div id="fb"></div>
@@ -777,25 +828,73 @@ function ask(){
   const qt=$('qText');qt.className='qtext'+(big?' big':'');qt.innerHTML=fmt(q.q)+(big?' = ?':'');
   $('qFig').hidden=!q.viz;$('qFig').innerHTML=q.viz||'';
   $('qUnit').textContent=q.unit||'';$('fracNote').hidden=!q.isFrac;
-  const inp=$('numIn');inp.value='';inp.disabled=false;inp.placeholder=q.isFrac?'z. B. 3/4':'Ergebnis';
-  $('numRow').classList.remove('ok','bad');$('numGo').disabled=false;$('numPm').disabled=false;
-  $('fb').innerHTML='';$('bNext').hidden=true;$('qTools').hidden=false;$('tipCard').hidden=true;$('tipCard').innerHTML='';
+  A={sign:false,a:'',b:'',frac:!!q.isFrac,f:'a'};padLock(false);$('ansArea').classList.remove('ok','bad');$('kFrac').classList.toggle('hl',!!q.isFrac);renderA();
+  padClear();$('scratch').hidden=true;$('bPad').textContent='📝 Schmierzettel';
+  $('fb').innerHTML='';$('bNext').hidden=true;$('qTools').hidden=false;$('bTip').hidden=false;$('bIdk').hidden=false;$('tipCard').hidden=true;$('tipCard').innerHTML='';
   $('tLeft').textContent=S.tips;$('bTip').disabled=S.tips<1;$('bTip').title=S.tips<1?'Du hast in diesem Durchgang schon alle 3 Tipp-Karten benutzt.':'Zeigt dir einen Ansatz und die wichtigsten Tricks';
-  goalRender();hud();startTimer();setTimeout(()=>{try{inp.focus({preventScroll:true});}catch(e){}},60);}
+  goalRender();hud();startTimer();}
 
 /* Eingabe */
 function parseNum(s){s=String(s).trim().replace(/[\s  ]/g,'').replace(/[−–]/g,'-').replace(/[^0-9,.\-\/]/g,'');if(!s)return NaN;
   if(s.indexOf('/')>0){const p=s.split('/');if(p.length!==2)return NaN;const a=parseNum(p[0]),b=parseNum(p[1]);return b?a/b:NaN;}
   if(s.indexOf(',')>=0)s=s.replace(/\./g,'').replace(',','.');else if(/^-?\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');
   if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s))return NaN;return parseFloat(s);}
-$('numPm').onclick=()=>{const i=$('numIn'),v=i.value.trim();i.value=/^[-−]/.test(v)?v.slice(1):'−'+v;i.focus();};
+/* ---------------- Antwort-Eingabe mit eigener Zahlentastatur ----------------
+   Funktioniert auf Handy, Tablet und PC gleich – mit Bruchstrich, Minus und Komma. */
+let A={sign:false,a:'',b:'',frac:false,f:'a'};
+function fieldHtml(v,on){return v===''?(on?'<span class="cur"></span>':'<span class="ph">?</span>'):esc(v)+(on?'<span class="cur"></span>':'');}
+function renderA(){const d=$('disp'),act=!S.ans;
+  if(!A.frac){d.innerHTML=(A.sign?'<span class="sg">−</span>':'')+(A.a===''?(act?'<span class="cur"></span><span class="ph">Ergebnis</span>':''):esc(A.a)+(act?'<span class="cur"></span>':''));}
+  else d.innerHTML=(A.sign?'<span class="sg">−</span>':'')+`<span class="fbox"><span class="fpart${A.f==='a'&&act?' on':''}" data-f="a" aria-label="Zähler">${fieldHtml(A.a,A.f==='a'&&act)}</span><span class="fbar"></span><span class="fpart${A.f==='b'&&act?' on':''}" data-f="b" aria-label="Nenner">${fieldHtml(A.b,A.f==='b'&&act)}</span></span>`;
+  $('kSwap').disabled=!A.frac||S.ans;$('kSwap').textContent=A.f==='a'?'▼ Nenner':'▲ Zähler';
+  $('kFrac').innerHTML=A.frac?'Kein Bruch':'<span class="fic"><i></i><i></i></span> Bruch';
+  d.setAttribute('aria-label','Dein Ergebnis: '+answerStr());}
+function answerStr(){const sg=A.sign?'−':'';return A.frac?sg+(A.a||'?')+'/'+(A.b||'?'):sg+A.a;}
+function key(k){if(S.ans||!$('brake').hidden)return;const f=A.f;
+  if(/^\d$/.test(k)){if(A[f].length<10)A[f]=(A[f]==='0'?'':A[f])+k;}
+  else if(k===','){if(A[f].indexOf(',')<0)A[f]=(A[f]===''?'0':A[f])+',';}
+  else if(k==='sign')A.sign=!A.sign;
+  else if(k==='back'){if(A[f]!=='')A[f]=A[f].slice(0,-1);else if(A.frac&&f==='b')A.f='a';else if(A.sign&&f==='a')A.sign=false;}
+  else if(k==='clear'){A.sign=false;A.a='';A.b='';A.f='a';}
+  else if(k==='frac'){if(A.frac){A.frac=false;A.f='a';A.b='';}else{A.frac=true;A.f=A.a===''?'a':'b';}}
+  else if(k==='swap'){if(A.frac)A.f=A.f==='a'?'b':'a';}
+  else if(k==='go'){submit();return;}
+  renderA();}
+$('pad').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(b&&!b.disabled)key(b.dataset.k);});
+$('disp').addEventListener('click',e=>{const p=e.target.closest('.fpart');if(p&&!S.ans){A.f=p.dataset.f;renderA();}});
+function padLock(on){$('pad').querySelectorAll('button').forEach(b=>b.disabled=on);$('numGo').disabled=on;}
 $('numGo').onclick=submit;
-$('numIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.stopPropagation();submit();}});
-function submit(){if(S.ans)return;const raw=$('numIn').value;if(!raw.trim()){toast('Gib zuerst dein Ergebnis ein.');return;}
-  const v=parseNum(raw);if(!isFinite(v)){toast('Das verstehe ich nicht. Nutze Ziffern, ein Komma oder einen Bruch wie 3/4.');$('numRow').classList.add('shake');setTimeout(()=>$('numRow').classList.remove('shake'),400);return;}
+/* Physische Tastatur (PC/Laptop) */
+document.addEventListener('keydown',e=>{if($('vQuiz').hidden||!$('brake').hidden||e.ctrlKey||e.metaKey||e.altKey)return;
+  const tg=document.activeElement&&document.activeElement.tagName;if(tg==='INPUT'||tg==='TEXTAREA')return;
+  if(S.ans){if(e.key==='Enter'&&document.activeElement!==$('bNext')){e.preventDefault();$('bNext').click();}return;}
+  let k=null;if(/^\d$/.test(e.key))k=e.key;else if(e.key===','||e.key==='.')k=',';else if(e.key==='-'||e.key==='−')k='sign';
+  else if(e.key==='/'||e.key===':')k=A.frac?'swap':'frac';else if(e.key==='Backspace')k='back';else if(e.key==='Delete'||e.key==='Escape')k='clear';
+  else if(e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='Tab'){if(A.frac){k='swap';}}else if(e.key==='Enter')k='go';
+  if(k){e.preventDefault();key(k);}});
+function submit(){if(S.ans)return;
+  if(A.a===''&&A.b===''){toast('Gib zuerst dein Ergebnis ein.');return;}
+  if(A.frac&&A.a===''){toast('Trage noch den Zähler ein (oben).');A.f='a';renderA();return;}
+  if(A.frac&&A.b===''){toast('Trage noch den Nenner ein (unten).');A.f='b';renderA();return;}
+  const raw=A.frac?(A.sign?'-':'')+A.a+'/'+A.b:(A.sign?'-':'')+A.a;const v=parseNum(raw);
+  if(!isFinite(v)){toast(A.frac&&parseNum(A.b)===0?'Durch 0 kann man nicht teilen – prüfe den Nenner.':'Das verstehe ich nicht. Prüfe deine Eingabe.');$('ansArea').classList.add('shake');setTimeout(()=>$('ansArea').classList.remove('shake'),400);return;}
   const q=S.cur,tol=1e-7*Math.max(1,Math.abs(q.ans));let ok=Math.abs(v-q.ans)<=tol;
-  if(!ok&&q.isFrac&&/[,.]\d{2,}/.test(raw)&&Math.abs(v-q.ans)<0.006)ok=true;
-  answer(ok,{user:raw.trim()});}
+  if(!ok&&q.isFrac&&!A.frac&&/,\d{2,}/.test(A.a)&&Math.abs(v-q.ans)<0.006)ok=true;
+  answer(ok,{user:A.frac?(A.sign?'−':'')+'{'+A.a+'/'+A.b+'}':(A.sign?'−':'')+A.a});}
+
+/* ---------------- Schmierzettel ---------------- */
+const cv=$('padCv');let cx=null,drawing=false,lastP=null;
+function padSize(){const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;if(!r.width)return;const keep=cx?cv.toDataURL():null;
+  cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);cx=cv.getContext('2d');cx.setTransform(dpr,0,0,dpr,0,0);cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=2.6;
+  if(keep){const im=new Image();im.onload=()=>cx.drawImage(im,0,0,r.width,r.height);im.src=keep;}}
+function padClear(){if(cx){const r=cv.getBoundingClientRect();cx.clearRect(0,0,r.width||cv.width,r.height||cv.height);}}
+const pt=e=>{const r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
+cv.addEventListener('pointerdown',e=>{if(!cx)padSize();drawing=true;lastP=pt(e);try{cv.setPointerCapture(e.pointerId);}catch(_){}cx.strokeStyle=getComputedStyle(document.body).color;cx.beginPath();cx.arc(lastP.x,lastP.y,1.2,0,6.3);cx.fillStyle=cx.strokeStyle;cx.fill();e.preventDefault();});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;const p=pt(e);cx.beginPath();cx.moveTo(lastP.x,lastP.y);cx.lineTo(p.x,p.y);cx.stroke();lastP=p;});
+['pointerup','pointercancel','lostpointercapture'].forEach(n=>cv.addEventListener(n,()=>{drawing=false;}));
+$('bPad').onclick=()=>{const sc=$('scratch');sc.hidden=!sc.hidden;$('bPad').textContent=sc.hidden?'📝 Schmierzettel':'📝 Schmierzettel zuklappen';if(!sc.hidden){padSize();try{sc.scrollIntoView({behavior:'smooth',block:'nearest'});}catch(e){}}};
+$('bPadClear').onclick=padClear;
+window.addEventListener('resize',()=>{if(!$('scratch').hidden)padSize();});
 $('bIdk').onclick=()=>answer(false,{idk:true});
 
 /* Tipp-Karte: höchstens 3 pro Durchgang */
@@ -803,7 +902,7 @@ $('bTip').onclick=()=>{const q=S.cur;if(S.ans||S.tips<1||S.helped)return;
   $('tipCard').innerHTML=`<div class="tch"><span>💡 Tipp-Karte ${4-S.tips} von 3</span><span>${TOPICS[q.t][1]} ${esc(TOPICS[q.t][0])}</span></div><div class="tcb">`+
    `<div class="step"><div class="lbl">So kannst du anfangen</div>${fmt(q.hint)}</div><div><div class="lbl">Merkkarte</div><ul>${(MERK[q.t]||[]).map(m=>'<li>'+fmt(m)+'</li>').join('')}</ul></div></div>`;
   $('tipCard').hidden=false;S.tips--;S.tipsUsed++;S.helped=true;$('tLeft').textContent=S.tips;$('bTip').disabled=true;
-  if(S.tips===0)toast('Das war deine letzte Tipp-Karte für diesen Durchgang.');try{$('numIn').focus({preventScroll:true});}catch(e){}};
+  if(S.tips===0)toast('Das war deine letzte Tipp-Karte für diesen Durchgang.');};
 
 /* Auswertung */
 function addBadge(b){if(S.badges.indexOf(b)<0)S.badges.push(b);}
@@ -816,15 +915,15 @@ function answer(right,info){if(S.ans)return;S.ans=true;const q=S.cur,dt=stopTime
     if(!S.diff&&!S.helped)P.tl[q.t]=Math.min(3.4,(P.tl[q.t]||1)+0.5);
     head=q.isRetry?pickFresh(COME,'mC'):pickFresh(OK,'mO');if(q.isRetry){S.comebacks++;if(S.comebacks===3)addBadge('🔁 3 Comebacks');}
     head=fmt(head)+` <span style="font-size:15px;font-weight:400">(+${gain} Punkte${blitz?' · ⚡ Blitz-Bonus':''}${S.helped?' · mit Tipp':''})</span>`;ico=blitz?'⚡':'🎉';cls='good';
-    $('numRow').classList.add('ok');
+    $('ansArea').classList.add('ok');
     if([5,10,15,20,30].indexOf(S.streak)>=0){toast(`🔥 ${S.streak} richtig hintereinander!`);addBadge(`🔥 ${S.streak}er-Serie`);}
     if(S.blitz===5)addBadge('⚡ 5× Blitz-Bonus');
   }else{S.streak=0;if(!S.diff)P.tl[q.t]=Math.max(1,(P.tl[q.t]||1)-0.6);S.retry={t:q.t,d:q.d,gid:q.gid};
-    head=fmt(info.idk?pick(IDK):pickFresh(BAD,'mB'));ico=info.idk?'💡':'🌱';cls='learn';$('numRow').classList.add('bad');
-    sol=`<p class="sol">${info.user?'Deine Antwort: '+esc(info.user)+' · ':''}Richtig ist: ${fmt(q.show)}${q.unit&&!/^[xm] =/.test(q.show)?' '+esc(q.unit):''}</p>`;
+    head=fmt(info.idk?pick(IDK):pickFresh(BAD,'mB'));ico=info.idk?'💡':'🌱';cls='learn';$('ansArea').classList.add('bad');
+    sol=`<p class="sol">${info.user?'Deine Antwort: '+fmt(info.user)+' · ':''}Richtig ist: ${fmt(q.show)}${q.unit&&!/^[xm] =/.test(q.show)?' '+esc(q.unit):''}</p>`;
     // Schnell-Raten-Bremse
     const lim=q.d===1?2.5:3.5;if(!info.idk&&dt<lim)S.fast++;else S.fast=0;}
-  $('numIn').disabled=true;$('numGo').disabled=true;$('numPm').disabled=true;$('qTools').hidden=true;
+  padLock(true);renderA();$('qTools').hidden=false;$('bTip').hidden=true;$('bIdk').hidden=true;
   $('fb').innerHTML=`<div class="fb ${cls}" role="status"><div class="head"><span class="ico">${ico}</span><span>${head}</span></div>${sol}`+
    `<div class="box why"><div class="lbl">So rechnest du im Kopf</div><p>${fmt(q.ex)}</p></div><div class="box fact"><div class="lbl">Trick</div><p>${fmt(q.f)}</p></div></div>`;
   S.facts.push({t:q.t,q:q.q,a:q.show+(q.unit&&!/^[xm] =/.test(q.show)?' '+q.unit:''),f:q.f,ok:right,dt:dt,retry:!!q.isRetry});store();
@@ -838,7 +937,6 @@ function answer(right,info){if(S.ans)return;S.ans=true;const q=S.cur,dt=stopTime
 function brake(sec){const b=$('brake');b.hidden=false;let n=sec;$('brakeCd').textContent=n;const iv=setInterval(()=>{n--;$('brakeCd').textContent=n;if(n<=0){clearInterval(iv);b.hidden=true;try{$('bNext').focus({preventScroll:true});}catch(e){}}},1000);}
 $('bNext').onclick=()=>{if($('bNext').disabled||!$('brake').hidden)return;if(S.target&&S.solved>=S.target)finish();else ask();};
 $('bFinish').onclick=()=>finish();
-document.addEventListener('keydown',e=>{if($('vQuiz').hidden||!$('brake').hidden)return;if(S.ans&&e.key==='Enter'&&document.activeElement!==$('bNext')){e.preventDefault();$('bNext').click();}});
 
 /* ---------------- Ergebnis ---------------- */
 const RES=[['{N}, jeder Fehler heute war eine Lernchance – und du hast {s} Aufgaben richtig gelöst. Bleib dran, Kopfrechnen ist Training!','Mutig, {N}! Kopfrechnen ist wie Sport: Je öfter du trainierst, desto leichter wird es.'],
@@ -865,7 +963,7 @@ $('bMore').onclick=()=>startRound();
 $('bHome').onclick=()=>{show('vStart');lifeRender();topicsRender();checkStart();};
 $('bSave').onclick=()=>{const d=new Date(),pad=n=>String(n).padStart(2,'0');const ds=pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
   const fq=S.firstN?Math.round(S.firstOk/S.firstN*100):0,avg=S.times.length?S.times.reduce((a,b)=>a+b,0)/S.times.length:0;
-  let t='KOPFRECHEN-JAGD ZP10 – Ergebnis\n==============================\nName:   '+S.name+'\nKlasse: '+S.kl+'\nDatum:  '+ds+'\n\n';
+  let t='KOPFRECHEN KAHOOT! – Ergebnis\n==============================\nName:   '+S.name+'\nKlasse: '+S.kl+'\nDatum:  '+ds+'\n\n';
   t+='Richtig gelöst:            '+S.solved+(S.target?' von '+S.target:'')+'\nVersuche insgesamt:        '+S.attempts+'\nBeim 1. Versuch richtig:   '+fq+' %\nØ Zeit (richtige):         '+de(avg,1)+' s\nTipp-Karten:               '+S.tipsUsed+' von 3\nPunkte:                    '+S.pts+'\nBeste Serie:               '+S.best+'\n\nThemen (richtig/Versuche):\n';
   Object.keys(S.byT).forEach(k=>{const v=S.byT[k];t+='  '+TOPICS[k][0]+': '+v.ok+'/'+v.n+'\n';});
   t+='\nMerkzettel:\n';memo().forEach(x=>t+='  '+(x.ok?'[richtig] ':'[üben]   ')+plain(x.q)+' → '+plain(x.a)+'\n    Trick: '+plain(x.f)+'\n');
