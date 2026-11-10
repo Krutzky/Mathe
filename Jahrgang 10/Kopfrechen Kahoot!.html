@@ -272,6 +272,9 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
 .scrhead .btn{padding:6px 12px;font-size:14px}
 #padCv{display:block;width:100%;height:230px;touch-action:none;cursor:crosshair;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
 @media (prefers-reduced-motion: reduce){.disp .cur{animation:none}}
+
+.pad .slash{font-size:24px;font-weight:700;margin-right:3px;vertical-align:-2px}
+.pad button[data-k="frac"]{font-size:16px;border:2px solid var(--blue);color:var(--blue)}
 </style></head><body>
 <header><div class="hwrap">
   <div class="brand"><span class="top">Kopfrechnen · Fit für Teil 1 der ZP10</span><b>Kopfrechen <em>Kahoot!</em></b><span id="who">Ohne Taschenrechner · Ohne Raten</span></div>
@@ -327,12 +330,12 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
           <div class="disp" id="disp" role="textbox" aria-live="polite" aria-label="Dein Ergebnis"></div>
           <span class="unit" id="qUnit"></span>
         </div>
-        <p class="muted anshint" id="fracNote" hidden>Hier ist ein Bruch gefragt: Tippe den Zähler, dann <b>▼ Nenner</b> und den Nenner. Kürzen ist nicht nötig.</p>
+        <p class="muted anshint" id="fracNote" hidden>Hier ist ein Bruch gefragt: Tippe den Zähler, dann <b>▼ Nenner</b> und den Nenner. Den Bruchstrich bekommst du mit der Taste <b>/ Bruch</b>. Kürzen ist nicht nötig.</p>
         <div class="pad" id="pad" aria-label="Zahlentastatur">
           <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="back" class="fn" aria-label="Löschen">⌫</button>
           <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="sign" class="fn" aria-label="Minuszeichen setzen oder entfernen">−</button>
           <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="," class="fn" aria-label="Komma">,</button>
-          <button type="button" data-k="frac" class="fn frac" id="kFrac" aria-label="Bruchstrich"><span class="fic"><i></i><i></i></span> Bruch</button><button type="button" data-k="0">0</button><button type="button" data-k="swap" class="fn" id="kSwap" aria-label="Zwischen Zähler und Nenner wechseln">▼ Nenner</button><button type="button" data-k="clear" class="fn" aria-label="Alles löschen">C</button>
+          <button type="button" data-k="frac" class="fn frac" id="kFrac" aria-label="Bruchstrich"><span class="slash">/</span> Bruch</button><button type="button" data-k="0">0</button><button type="button" data-k="swap" class="fn" id="kSwap" aria-label="Zwischen Zähler und Nenner wechseln">▼ Nenner</button><button type="button" data-k="clear" class="fn" aria-label="Alles löschen">C</button>
         </div>
         <button type="button" class="btn pri go" id="numGo">Prüfen ✓</button>
       </div>
@@ -844,10 +847,10 @@ function parseNum(s){s=String(s).trim().replace(/[\s  ]/g,'').replace(/[−�
 let A={sign:false,a:'',b:'',frac:false,f:'a'};
 function fieldHtml(v,on){return v===''?(on?'<span class="cur"></span>':'<span class="ph">?</span>'):esc(v)+(on?'<span class="cur"></span>':'');}
 function renderA(){const d=$('disp'),act=!S.ans;
-  if(!A.frac){d.innerHTML=(A.sign?'<span class="sg">−</span>':'')+(A.a===''?(act?'<span class="cur"></span><span class="ph">Ergebnis</span>':''):esc(A.a)+(act?'<span class="cur"></span>':''));}
+  if(!A.frac){d.innerHTML=(A.sign?'<span class="sg">−</span>':'')+(A.a===''?(act?'<span class="cur"></span><span class="ph">Tippe unten auf die Tasten</span>':''):esc(A.a)+(act?'<span class="cur"></span>':''));}
   else d.innerHTML=(A.sign?'<span class="sg">−</span>':'')+`<span class="fbox"><span class="fpart${A.f==='a'&&act?' on':''}" data-f="a" aria-label="Zähler">${fieldHtml(A.a,A.f==='a'&&act)}</span><span class="fbar"></span><span class="fpart${A.f==='b'&&act?' on':''}" data-f="b" aria-label="Nenner">${fieldHtml(A.b,A.f==='b'&&act)}</span></span>`;
   $('kSwap').disabled=!A.frac||S.ans;$('kSwap').textContent=A.f==='a'?'▼ Nenner':'▲ Zähler';
-  $('kFrac').innerHTML=A.frac?'Kein Bruch':'<span class="fic"><i></i><i></i></span> Bruch';
+  $('kFrac').innerHTML=A.frac?'<span class="slash">/</span> weg':'<span class="slash">/</span> Bruch';
   d.setAttribute('aria-label','Dein Ergebnis: '+answerStr());}
 function answerStr(){const sg=A.sign?'−':'';return A.frac?sg+(A.a||'?')+'/'+(A.b||'?'):sg+A.a;}
 function key(k){if(S.ans||!$('brake').hidden)return;const f=A.f;
