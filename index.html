@@ -108,6 +108,7 @@
      - jahrgang: z. B. "Jahrgang 7" (muss in JAHRGAENGE stehen).
               Weglassen = Thema steht direkt auf der Startseite.
      - thema: Überschrift (z. B. die Unterrichtseinheit)
+              Weglassen (mit jahrgang) = App steht direkt im Jahrgang.
      - nr:    Nummer auf der Kachel
      - titel: Name der App
      - info:  kurze Zeile unter dem Namen (optional)
@@ -151,7 +152,7 @@
     { jahrgang: "Jahrgang 9", thema: "Modul 9.3", nr: 1, titel: "Modul 9.3", info: "", datei: "" },
     { jahrgang: "Jahrgang 9", thema: "Modul 9.4", nr: 1, titel: "Modul 9.4", info: "", datei: "" },
     { jahrgang: "Jahrgang 9", thema: "Modul 9.5", nr: 1, titel: "Modul 9.5", info: "", datei: "" },
-    { jahrgang: "Jahrgang 10", thema: "ZP-10 Vorbereitung", nr: 1, titel: "Kahoot! ZP 10", info: "Fit für die Zentrale Prüfung: Teil 1 und Teil 2", datei: "Jahrgang%2010/zp10-vorbereitung.html" },
+    { jahrgang: "Jahrgang 10", nr: 1, titel: "ZP-10 Vorbereitung Kahoot!", info: "Fit für die Zentrale Prüfung: Teil 1 und Teil 2", datei: "Jahrgang%2010/ZP-10%20Vorbereitung%20Kahoot!.html" },
     { jahrgang: "Jahrgang 10", thema: "Kopfrechen Kahoot!", nr: 1, titel: "Kopfrechen Kahoot!", info: "Fit für Teil 1: Kopfrechnen ohne Taschenrechner", datei: "Jahrgang%2010/Kopfrechen%20Kahoot!.html" },
     { jahrgang: "Jahrgang 10", thema: "Modul 10.1", ordner: "Quadratische Funktionen – Parabeln", nr: 1, titel: "Parabel-Fahrstuhl", info: "Wie verändert e die Parabel y = x² + e?", datei: "Jahrgang%2010/Modul%2010.1/Quadratische%20Funktionen%20-%20Parabeln/parabel-fahrstuhl.html" },
     { jahrgang: "Jahrgang 10", thema: "Modul 10.1", ordner: "Quadratische Funktionen – Parabeln", nr: 2, titel: "Parabel-Kran", info: "Wie verschiebt d die Parabel y = (x − d)²?", datei: "Jahrgang%2010/Modul%2010.1/Quadratische%20Funktionen%20-%20Parabeln/parabel-kran.html" },
@@ -173,7 +174,7 @@
   }
   function themenVon(liste) {
     const t = [];
-    liste.forEach(a => { if (!t.includes(a.thema)) t.push(a.thema); });
+    liste.forEach(a => { if (a.thema && !t.includes(a.thema)) t.push(a.thema); });
     return t;
   }
   const ohneJahrgang = apps.filter(a => !a.jahrgang);
@@ -219,7 +220,9 @@
       const jgApps = apps.filter(a => a.jahrgang === jg);
       const offen = jgApps.filter(istOffen).length;
       const nt = themenVon(jgApps.filter(istOffen)).length;
-      liste.appendChild(kachel(nr++, jg, offen ? anzahl(nt, "Thema", "Themen") : "folgt bald",
+      const na = jgApps.filter(a => !a.thema && istOffen(a)).length;
+      const txt = [na ? anzahl(na, "App", "Apps") : "", nt ? anzahl(nt, "Thema", "Themen") : ""].filter(Boolean).join(" · ");
+      liste.appendChild(kachel(nr++, jg, offen ? txt : "folgt bald",
         hashFuer({ j: jg }), offen > 0));
     });
   }
@@ -231,9 +234,15 @@
     zurueckLink("Übersicht", "#");
     ueberschrift(jg);
     const jgApps = apps.filter(a => a.jahrgang === jg);
-    themenVon(jgApps).forEach((thema, i) => {
+    // Apps ohne Thema stehen direkt im Jahrgang, vor den Themen
+    let nr = 1;
+    jgApps.filter(a => !a.thema).forEach(app => {
+      const offen = istOffen(app);
+      liste.appendChild(kachel(nr++, app.titel, offen ? (app.info || "") : "folgt bald", app.datei, offen));
+    });
+    themenVon(jgApps).forEach(thema => {
       const offen = jgApps.filter(a => a.thema === thema && istOffen(a)).length;
-      liste.appendChild(kachel(i + 1, thema, offen ? anzahl(offen, "App", "Apps") : "folgt bald",
+      liste.appendChild(kachel(nr++, thema, offen ? anzahl(offen, "App", "Apps") : "folgt bald",
         hashFuer({ j: jg, t: thema }), offen > 0));
     });
   }

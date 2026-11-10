@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kahoot! ZP 10</title>
+<title>ZP-10 Vorbereitung Kahoot!</title>
 <style>
 /* Karoheft-Look: Tinte, Textmarker, Kästchenpapier. Karten liegen wie Zettel auf dem Heft. */
 :root{
@@ -207,7 +207,7 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
 </head>
 <body>
 <header><div class="hwrap">
-  <div class="brand"><span class="top">Mathe · Vorbereitung auf die ZP10</span><b>Kahoot! <em>ZP 10</em></b><span id="who">Rechnen · Knobeln · Bestehen</span></div>
+  <div class="brand"><span class="top">Mathe · Vorbereitung auf die ZP10</span><b>ZP-10 Vorbereitung <em>Kahoot!</em></b><span id="who">Rechnen · Knobeln · Bestehen</span></div>
   <div class="hud" id="hud" hidden>
     <span class="pill" title="Punkte">⭐ <span id="hPts">0</span></span>
     <span class="pill" id="hStreak" title="Richtige Antworten hintereinander">🔥 <span id="hStr">0</span></span>
@@ -219,7 +219,7 @@ label.f input{border:2px solid var(--line);border-radius:10px;padding:10px 12px;
   <!-- Start -->
   <section id="vStart">
     <div class="card">
-      <div class="eyebrow">Willkommen bei Kahoot! ZP 10!</div>
+      <div class="eyebrow">Willkommen bei ZP-10 Vorbereitung Kahoot!!</div>
       <h1>Fit für die Zentrale Prüfung in Mathe</h1>
       <p class="muted">Kopfrechnen, Prozente, Funktionen, Pythagoras, Wahrscheinlichkeit und vieles mehr: Hier warten <b id="nQ">200</b> feste Aufgaben und <b id="nG">70</b> Aufgabentypen, die sich jedes Mal mit neuen Zahlen zusammenwürfeln. Mal tippst du die richtige Antwort an, mal rechnest du selbst, mal schiebst du Graphen und Karten an die richtige Stelle. Fehler sind ausdrücklich erlaubt – nach jeder Aufgabe siehst du den Rechenweg. Wenn du feststeckst, helfen dir der ✂️ 50:50-Joker und die 💡 Tipp-Karten. Mit Hilfe gibt es halbe Punkte, und für jede 5er-Serie bekommst du eine neue Tipp-Karte geschenkt.</p>
       <div class="row" style="margin-top:14px">
@@ -1179,9 +1179,9 @@ const RES={
  3:['Wow, {N}! {r} von {n} – das ist richtig beeindruckend!','Spitzenleistung, {N}! Du bist ein echtes Mathe-Ass.','{N}, du hast die Mathe heute im Griff gehabt. Respekt!',
   'Großartig, {N}! So viele richtige Lösungen – die ZP kann kommen.','Stark, {N}! Bei {r} Treffern merkt man: Du rechnest sauber und denkst mit.'],
  4:['Unglaublich, {N}! {r} von {n} – du bist bereit für die ZP!','{N}, das war eine Meisterleistung! Pythagoras wäre stolz auf dich.','Wahnsinn, {N}! Fast alles richtig – du bist ein wandelnder Taschenrechner!',
-  'Überragend, {N}! So eine Runde schafft nicht jeder. Hut ab!','Volle Punktzahl-Energie, {N}! Du gehörst zu den Besten bei Kahoot! ZP 10.']};
+  'Überragend, {N}! So eine Runde schafft nicht jeder. Hut ab!','Volle Punktzahl-Energie, {N}! Du gehörst zu den Besten bei ZP-10 Vorbereitung Kahoot!.']};
 const RES_SUB=['Du hast heute {n} Aufgaben gelöst und {p} Punkte gesammelt.','{n} Aufgaben, {p} Punkte – und jede Menge Übung für die Prüfung.',
- 'Insgesamt hast du schon {L} Aufgaben bei Kahoot! ZP 10 bearbeitet. Weiter so!','Deine längste Serie heute: {s} richtige Antworten hintereinander.',
+ 'Insgesamt hast du schon {L} Aufgaben bei ZP-10 Vorbereitung Kahoot! bearbeitet. Weiter so!','Deine längste Serie heute: {s} richtige Antworten hintereinander.',
  'Tipp: Ein paar Aufgaben jeden Tag bringen mehr als eine lange Runde kurz vor der Prüfung.'];
 
 /* ---------------- Zustand & Startseite ---------------- */
@@ -1436,7 +1436,7 @@ $('bSave').onclick=()=>{
   const d=new Date(),pad=n=>String(n).padStart(2,'0');
   const ds=pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
   const p=Math.round(S.ok/S.n*100);
-  let t='KAHOOT! ZP 10 – Ergebnis\n========================\n';
+  let t='ZP-10 VORBEREITUNG KAHOOT! – Ergebnis\n=====================================\n';
   t+='Name:   '+S.name+'\nKlasse: '+S.kl+'\nDatum:  '+ds+'\n\n';
   t+='Bearbeitete Aufgaben: '+S.n+'\nRichtig:              '+S.ok+' ('+p+' %)\nPunkte:               '+S.pts+'\nBeste Serie:          '+S.best+'\n\n';
   t+='Prüfungsteile:\n';['1','2'].forEach(k=>{const v=S.byP[k];t+='  '+PART[k][0]+': '+(v?v.ok+' von '+v.n:'nicht geübt')+'\n';});
